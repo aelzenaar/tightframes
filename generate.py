@@ -8,8 +8,8 @@ from datetime import datetime
 parser = argparse.ArgumentParser(description='Generate a database of designs from a given set of runtf output files.')
 parser.add_argument('directory', metavar='DIR', help='directory to scan')
 parser.add_argument('-R','--recursive', action='store_true', help='scan DIR recursively')
-parser.add_argument('-e','--existing', action='store_true', help='connect to a running MATLAB session')
-parser.add_argument('-O','--output', default='html', help='output directory')
+parser.add_argument('-e','--existing', action='count', help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
+parser.add_argument('-o','--output', default='html', help='output directory')
 
 args = parser.parse_args()
 search_dir = Path(args.directory)
@@ -18,7 +18,7 @@ if not search_dir.is_dir():
 
 output_dir = Path(args.output)
 recurse = (args.recursive == True)
-existing = (args.existing == True)
+existing = args.existing
 
 if recurse:
     mat_files = list(search_dir.glob('*.mat'))
@@ -32,9 +32,15 @@ k = []
 error = []
 filenames = []
 
-if existing:
+# -e but not -ee specified, so print usage and wait for user OK.
+if existing == 1:
     print('In the running MATLAB session enter the command:\tmatlab.engine.shareEngine')
     input("Press Enter to continue...")
+
+
+if existing > 0:
+    if(matlab.engine.find_matlab() == ()):
+        sys.exit('MATLAB is not running, or you didn\'t heed the prompt...')
     eng = matlab.engine.connect_matlab()
 else:
     eng = matlab.engine.start_matlab()

@@ -234,14 +234,14 @@ set(gca, 'YScale', 'log');
   The script takes one required argument --- the directory in which to look for the \texttt{.mat} files. If the \texttt{-R}
   flag is specified, then the script will search recursively; otherwise it will search only the directory given and no subdirectories.
   For each \texttt{.mat} file it finds, the script will check whether it contains a variable called \texttt{result}. If it does,
-  then it is copied to the output directory (default is \texttt{html/}, but this may be changed using the \texttt{-O} flag). An
+  then it is copied to the output directory (default is \texttt{html/}, but this may be changed using the \texttt{-o} flag). An
   \texttt{index.html} file is also generated in the output directory containing a list of all the found designs, along with some
   parameters ($d$, $n$, $t$, and $k $ from \cref{tab:tightframe_params}, along with the error of the design found).
 
   If the flag \texttt{-e} is set, the script will attempt to connect to a running MATLAB instance; otherwise it will try to start
   MATLAB itself. If connection to an existing MATLAB instance is needed, the user should note that some user interaction is required:
   a command needs to be run in the MATLAB console and then the \Enter key needs to be pressed to make the script continue. The command
-  needs only be run once for a given MATLAB instance.
+  needs only be run once for a given MATLAB instance, and to avoid the prompt one can give the flag twice (\texttt{-ee}).
 
   The up-to-date usage information for the script may be viewed by running \texttt{python generate.py -h}.
 
