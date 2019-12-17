@@ -27,6 +27,8 @@
 \usepackage{listings}
 \lstset{language=Matlab}
 
+\usepackage{keystroke}
+
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
@@ -68,11 +70,21 @@
     \item Statistics and Machine Learning Toolbox
   \end{itemize}
 
+  In addition, should the user wish to use the \texttt{generate.py} Python script to create
+  a nice index for their generated designs, they will require:
+  \begin{itemize}
+    \item The MATLAB Engine API for Python\footnote{This is included by default with MATLAB but must be specifically installed. Documentation may be found at the
+          following URL: \url{https://au.mathworks.com/help/matlab/matlab-engine-for-python.html}}
+  \end{itemize}
+
   \section{Software usage}
   In this section, we describe how the user can use the algorithm implementation to generate
   putatively optimal spherical designs.
 
-  \subsection{The \textproc{tightframe} method}  
+  MATLAB files are located in the \texttt{matlab/} subdirectory; all the scripts and procedures
+  are implemented in MATLAB unless otherwise stated.
+
+  \subsection{The \textproc{tightframe} method}
   The main method available is \textproc{tightframe}; this method takes the parameters
   listed in \cref{tab:tightframe_params} and produces the tuple of return values listed
   in \cref{tab:tightframe_returns}. Broadly speaking, the purpose of this method is to
@@ -193,12 +205,12 @@ set(gca, 'YScale', 'log');
     \end{threeparttable}
     \caption{Return values for the \textproc{tightframe} method.\label{tab:tightframe_returns}}
   \end{table}
-  
+
   \subsection{The \texttt{runtf} script}
   The \textproc{tightframe} method is useful if the user wants to script the algorithm (e.g. try to run it for
   lots of values of $ n $ to find the minimal $ n $ such that a $ (t,t)$--design in $ \C^d $ exists). However,
   if the user does not need this power they will probably want to use the wrapper script in \texttt{runtf.m}.
-  
+
   In order to change the design parameters (the same as those listed in \cref{tab:tightframe_params}, the user
   should change the first few lines of \texttt{runtf.m}; then the script (when run) will produce the following:
   \begin{itemize}
@@ -210,6 +222,28 @@ set(gca, 'YScale', 'log');
           in the file \verb|tf_run_YYYY-MM-DD-HH-MM-SS.mat| (in the current directory).
     \item A plot of the best error over time (displayed on screen as a MATLAB figure).
   \end{itemize}
+
+  \subsection{The \textproc{compute3Products} method}
+  This method takes a single argument --- a $ d \times n $ matrix $ A $ --- and computes the set of all $ n^3 $ 3--products of the vectors of $ A $,
+  sorted according to the MATLAB \textproc{sort} method.
+
+  \subsection{The \texttt{generate.py} script}
+  The purpose of this script, located in the top-level directory, is to take a directory of \texttt{.mat} files generated
+  by the \texttt{runtf} method and produce a folder containing a nice HTML index of the generated designs.
+
+  The script takes one required argument --- the directory in which to look for the \texttt{.mat} files. If the \texttt{-R}
+  flag is specified, then the script will search recursively; otherwise it will search only the directory given and no subdirectories.
+  For each \texttt{.mat} file it finds, the script will check whether it contains a variable called \texttt{result}. If it does,
+  then it is copied to the output directory (default is \texttt{html/}, but this may be changed using the \texttt{-O} flag). An
+  \texttt{index.html} file is also generated in the output directory containing a list of all the found designs, along with some
+  parameters ($d$, $n$, $t$, and $k $ from \cref{tab:tightframe_params}, along with the error of the design found).
+
+  If the flag \texttt{-e} is set, the script will attempt to connect to a running MATLAB instance; otherwise it will try to start
+  MATLAB itself. If connection to an existing MATLAB instance is needed, the user should note that some user interaction is required:
+  a command needs to be run in the MATLAB console and then the \Enter key needs to be pressed to make the script continue. The command
+  needs only be run once for a given MATLAB instance.
+
+  The up-to-date usage information for the script may be viewed by running \texttt{python generate.py -h}.
 
   \section{Mathematical background}
   Let $ \scrH $ be a finite-dimensional Hilbert space of dimension $ d $ (so, as a vector space,
@@ -234,6 +268,7 @@ set(gca, 'YScale', 'log');
           c_t(\scrH) \sum_{i = 1}^n \sum_{j = 1}^n \abs{\inp{v_i, v_j}}^{2t}
             - n^2.
   \end{equation}
+  The value of $ \FP $ for a given design is called the \textit{error} of that design.
 
   Define the set $ \SD_\scrH(n,t) := \FP_{\scrH,n,t}^{-1}(0) $; the elements of this set
   are called \df{spherical $ (t,t)$-designs} of order $ n $, embedded in $ \scrH $. (These
@@ -255,7 +290,7 @@ set(gca, 'YScale', 'log');
   \begin{displaymath}
     \Gamma((v_i)_{i=1}^d) = [V^* V] = [\inp{v_j,v_i}_{i,j}].
   \end{displaymath}
-  
+
   It can be shown that the Gram matrix $ \Gamma $ has the following properties:
   \begin{enumerate}[label=(G\arabic*)]\label{pg:gram_properties}
     \item $ \Gamma $ is Hermitian;
@@ -266,7 +301,7 @@ set(gca, 'YScale', 'log');
   \end{enumerate}
   Note that (1) and (2) are conditions on the \emph{entries} of $ \Gamma $, while (3), (4), and (5) are conditions
   on the \emph{spectrum} of $ \Gamma $.
-  
+
   We may also find the gradient of $ \FP_{\scrH,n,t} $ with respect to the entries of the Gram
   matrix: we may rewrite $ \FP $ in terms of $ \Gamma $ as
   \begin{displaymath}
@@ -278,7 +313,7 @@ set(gca, 'YScale', 'log');
   \end{displaymath}
   thus to decrease the frame potential we must perturb the Gram matrix in the direction $ -\nabla \FP $
   where $ (\nabla \FP)_{i,j} = \pd{\FP}{\Gamma_{i,j}} $.
-  
+
   \section{Algorithms implemented}
   In this section we will give pseudocode for the operations that are implemented by this
   package, along with explaining various design choices and limitations of the approach.
@@ -287,17 +322,17 @@ set(gca, 'YScale', 'log');
   The high-level method is implemented in \textproc{tightframe}, listed in \cref{alg:high_level}.
   The algorithm as described here does not take the $ fd $ parameter listed in \cref{tab:tightframe_params},
   as this is only used to print status updates.
-  
+
   We begin by choosing a good starting Gram matrix (line \ref{line:seed}). We generate $ s $ different matrices
   with the properties (G1)--(G5) (the `seed' matrices), and pick the one which minimises the potential function
   to begin the iteration with.
-  
+
   The actual iteration begins on line \ref{line:tf_iter}; the variable $ badCount $ holds the number of iterations
   since the current best matrix $ A $ was found, and if $ badCount < b $ we attempt to walk down the gradient
   a small random amount. The mean distance to walk, $ \frac{error \times errorMultiplier}{totalBadness + 1} $,
   is proportional to $ error $ (so when we are `close' the distance we walk decreases), and inversely proportional
   to $ totalBadness $ (so if we keep failing to find a good choice the step size decreases).
-  
+
   If $ badCount $ exceeds the parameter $ b $, we stop trying to walk down the gradient and instead we pick
   random matrices from the `ball' $ B $ around $ A $ of mean distance $ error\times errorMultiplier$. The idea here
   is that if the badCount is high then we keep trying and failing to walk along the line of steepest descent
@@ -318,22 +353,22 @@ set(gca, 'YScale', 'log');
     \caption{An intuitive depiction of the way counting `badness' allows the algorithm to skip twists in the path of steepest descent.\label{fig:badness_illustration}}
   \end{figure}
 
-  
+
   In either case we have picked a new random candidate for Gram matrix near $ A $; we call it $ A_\mathrm{new} $.
   Since the randomisation process does not guarantee that $ A_\mathrm{new} $ is Hermitian, we project it onto
   the space of Hermitian matrices (line \ref{line:make_hermitian}); then we attempt to project it onto the space
   of matrices satisfying the properties (G1)--(G5). This is done by the method \textproc{alternatingProjection}
   described below; \textproc{tightframe} passes into this method the parameter $ ap $ to modify the accuracy
   of the alternating projection algorithm, as well as the matrix $ A_\mathrm{new} $ and the desired rank $ d $.
-  
+
   Finally, we compute the error of the resulting matrix; if it is lower than the current best we set the $ badCount $
   back to zero; otherwise we increase both $ totalBadness $ and $ badCount $.
-  
+
   When the loop is done, we are left with a Gram matrix $ A $ satisfying (G1)--(G5). The final diagonalisation process
   undoes the map $ V \mapsto \Gamma = V*V $ which produces the Gram matrix from the initial vectors. The resulting
   $ n \times n $ matrix will have $ n - d $ zero rows (by consideration of the rank of $ A $) and so we project down
   to $ \C^d $ in the natural way to produce the final matrix $ result $ which is returned.
-  
+
   \begin{algorithm}
     \caption{The high-level method}\label{alg:high_level}
     \begin{algorithmic}[1]
@@ -357,7 +392,7 @@ set(gca, 'YScale', 'log');
           \State $ A_{\mathrm{new}} \gets \frac{A_{\mathrm{new}} + A_{\mathrm{new}}^*}{2} $\label{line:make_hermitian}
           \State Project $ A_{\mathrm{new}} $ onto the space of matrices satisfying (G1)-(G5).
           \State $ error_\mathrm{new} \gets \FP_{\C^d,n,t}(A_{\mathrm{new}}) $
-          
+
           \If{$error_\mathrm{new} < error$}
             \State $ A \gets A_\mathrm{new} $
             \State $ error \gets error_\mathrm{new} $
@@ -367,7 +402,7 @@ set(gca, 'YScale', 'log');
             \State $ totalBadness \gets totalBadness + 1 $
           \EndIf
         \EndWhile
-        
+
         \State $ U \gets $ the $ n \times n $ matrix of eigenvectors of $ A $
         \State $ D \gets $ the diagonal matrix of corresponding eigenvalues
         \State $ result \gets D^{1/2}U $
