@@ -8,7 +8,7 @@ from datetime import datetime
 parser = argparse.ArgumentParser(description='Generate a database of designs from a given set of runtf output files.')
 parser.add_argument('directory', metavar='DIR', help='directory to scan')
 parser.add_argument('-R','--recursive', action='store_true', help='scan DIR recursively')
-parser.add_argument('-e','--existing', action='count', help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
+parser.add_argument('-e','--existing', action='count', default=0, help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
 parser.add_argument('-o','--output', default='html', help='output directory')
 
 args = parser.parse_args()
@@ -48,7 +48,7 @@ else:
 
 for f in mat_files:
     matfile = eng.matfile(str(f.resolve()))
-    if eng.result == None:
+    if eng.getfield(matfile,'result') == None:
         print(f'Saw {str(f)}\t\tNo result array.')
         continue
     print(f'Saw {str(f)}\t\tand copying.')
