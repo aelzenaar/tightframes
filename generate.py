@@ -21,9 +21,9 @@ recurse = (args.recursive == True)
 existing = args.existing
 
 if recurse:
-    mat_files = list(search_dir.glob('*.mat'))
-else:
     mat_files = list(search_dir.glob('**/*.mat'))
+else:
+    mat_files = list(search_dir.glob('*.mat'))
 
 d = []
 n = []
