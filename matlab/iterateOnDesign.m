@@ -22,7 +22,7 @@
 %             totalBadness - the total number of times that the algorithm
 %                            failed to improve the estimate by walking
 %                            down the gradient.
-function [result,errors,totalBadness] = iterateOnDesign(d, n, t, A, k, b, ap, errorMultiplier, errorComputer, fd)
+function [result,errors,totalBadness] = iterateOnDesign(d, A, k, b, ap, errorMultiplier, errorComputer, fd)
     error = errorComputer.computeError(A);
     errors = zeros(k,1);
     badCount = 0; % Iterations since we last improved things by walking down the gradient.

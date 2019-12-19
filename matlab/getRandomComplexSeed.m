@@ -16,7 +16,7 @@
 %             totalBadness - the total number of times that the algorithm
 %                            failed to improve the estimate by walking
 %                            down the gradient.
-function A = getRandomComplexSeed(d,n,t,s,errorComputer,fd)
+function A = getRandomComplexSeed(d,n,s,errorComputer,fd)
     A = zeros(n,n); % The "best" Gram matrix found so far.
     error = inf; % The error associated with A
     

@@ -12,8 +12,8 @@ errorMultiplier = 1e-3; % Reduce if badness proportion > 0.9ish.
 profile clear
 profile on
 errorComputer = ComplexDesignPotential(d,n,t);
-A = getRandomComplexSeed(d,n,t,s,errorComputer,1);
-[result, errors, totalBadness] = iterateOnDesign(d, n, t, A, k, b, ap, errorMultiplier, errorComputer, 1);
+A = getRandomComplexSeed(d,n,s,errorComputer,1);
+[result, errors, totalBadness] = iterateOnDesign(d, A, k, b, ap, errorMultiplier, errorComputer, 1);
 profile off
 profile viewer
 
