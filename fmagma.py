@@ -72,4 +72,4 @@ with smart_open(output_filename) as f:
             f.write(f'    {reals[i][j]} + {imags[i][j]}*{unit}')
             if not ((i == rows - 1) and (j == cols - 1)):
                 f.write(',\n')
-    f.write('\n];\n')
+    f.write('\n]);\n')
