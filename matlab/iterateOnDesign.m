@@ -10,6 +10,11 @@
 %             ap - number of times to run alternating projection on each
 %                  iteration. Tropp says (p.138) that ap > 500 produces
 %                  negligible return.
+%             method - integer switch to change the iteration method:
+%                        0 - original method (i.e. use errorMultiplier but
+%                            otherwise linear in error and in
+%                            1/totalBadness).
+%                        1 - Newton's method.
 %             errorMultiplier - scale the walk length by this amount.
 %             errorComputer - instance of DesignPotential to compute error
 %                             and error gradient.
@@ -22,7 +27,9 @@
 %             totalBadness - the total number of times that the algorithm
 %                            failed to improve the estimate by walking
 %                            down the gradient.
-function [result,errors,totalBadness] = iterateOnDesign(d, A, k, b, ap, errorMultiplier, errorComputer, fd)
+function [result,errors,totalBadness] = iterateOnDesign(d, A, k, b, ap, method, errorMultiplier, errorComputer, fd)
+    assert((method == 0) | (method == 1));
+
     error = errorComputer.computeError(A);
     errors = zeros(k,1);
     badCount = 0; % Iterations since we last improved things by walking down the gradient.
@@ -30,12 +37,20 @@ function [result,errors,totalBadness] = iterateOnDesign(d, A, k, b, ap, errorMul
 
     for h = 1:k
         errors(h) = error; % Log the best error we have right now.
-        if(badCount < b)
-            delta = random('Lognormal',log(error.*errorMultiplier./(totalBadness + 1)),1);
-            A_new = A - delta.*errorComputer.computeGradient(A); % Pick a random matrix in the right direction.
-        else
-            fprintf(fd, 'Badness reached %d (total bad proportion %f), so randomly trying around.\n', badCount, totalBadness./h);
-            A_new = A + randn(size(A)).*error.*errorMultiplier;
+        if method == 0
+            if(badCount < b)
+                delta = random('Lognormal',log(error.*errorMultiplier./(totalBadness + 1)),1);
+                A_new = A - delta.*errorComputer.computeGradient(A); % Pick a random matrix in the right direction.
+            else
+                fprintf(fd, 'Badness reached %d (total bad proportion %f), so randomly trying around.\n', badCount, totalBadness./h);
+                A_new = A + randn(size(A)).*error.*errorMultiplier;
+            end
+        elseif method == 1
+            error = errorComputer.computeError(A);
+            fpgrad = errorComputer.computeGradient(A);
+            % Pick the right trace...
+            lambda = (trace(A) - n)/(error - trace(fpgrad));
+            A_new = A - lambda.*fpgrad.*error;
         end
         A_new = (A_new + A_new')./2; % Project the new matrix onto the space of Hermitian matrices.
         A_new = alternatingProjection(A_new,d,ap); % Try to fix the rank and so forth.
