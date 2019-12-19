@@ -31,6 +31,7 @@ t = []
 k = []
 error = []
 error_short = []
+comment = []
 filenames = []
 
 # -e but not -ee specified, so print usage and wait for user OK.
@@ -52,15 +53,22 @@ for f in mat_files:
         print(f'Saw {str(f)}\t\tNo result array.')
         continue
     print(f'Saw {str(f)}\t\tand copying.')
+
     def fill(array, name, form):
-        this_one = eng.getfield(matfile,name)
-        array.append(form(this_one) if this_one != None else None)
+        try:
+            this_one = eng.getfield(matfile,name)
+        except:
+            this_one = None
+        finally:
+            array.append(form(this_one) if this_one != None else None)
+
     fill(d,'d',int)
     fill(n,'n',int)
     fill(t,'t',int)
     fill(k,'k',int)
     fill(error,'errors',lambda val: val[-1][0])
     fill(error_short,'errors',lambda val: '%E'%(val[-1][0]) )
+    fill(comment,'comment',str)
 
     relative_filename = output_dir/f.relative_to(search_dir)
     filenames.append(str(relative_filename.relative_to(output_dir)))
@@ -78,9 +86,9 @@ with (output_dir/'index.html').open(mode='w') as f:
     <body>
         <h1>Index of generated designs</h1>
         <table border="1px" cellspacing="0" cellpadding="3">
-            <tr><th><i>d</i></th><th><i>n</i></th><th><i>t</i></th><th>iterations (<i>k</i>)</th><th>error (short)</th><th>error (long)</th><th>Link</th></tr>\n''')
+            <tr><th><i>d</i></th><th><i>n</i></th><th><i>t</i></th><th>iterations (<i>k</i>)</th><th>error (short)</th><th>error (long)</th><th>Comment</th><th>Link</th></tr>\n''')
     for i in range(0,len(filenames)):
-        f.write(f'            <tr><td>{d[i]}</td><td>{n[i]}</td><td>{t[i]}</td><td>{k[i]}</td><td>{error_short[i]}</td><td>{error[i]}</td><td><a href="{filenames[i]}">{filenames[i]}</a></td></tr>\n')
+        f.write(f'            <tr><td>{d[i]}</td><td>{n[i]}</td><td>{t[i]}</td><td>{k[i]}</td><td>{error_short[i]}</td><td>{error[i]}</td><td>{comment[i]}</td><td><a href="{filenames[i]}">{filenames[i]}</a></td></tr>\n')
     f.write(f'''
         </table>
         <footer>Generated: {datetime.today().ctime()}</footer>
