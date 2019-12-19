@@ -49,7 +49,7 @@ function [result,errors,totalBadness] = iterateOnDesign(d, A, k, b, ap, method, 
             error = errorComputer.computeError(A);
             fpgrad = errorComputer.computeGradient(A);
             % Pick the right trace...
-            lambda = (trace(A) - n)/(error - trace(fpgrad));
+            lambda = (trace(A) - length(A))/(error*trace(fpgrad));
             A_new = A - lambda.*fpgrad.*error;
         end
         A_new = (A_new + A_new')./2; % Project the new matrix onto the space of Hermitian matrices.
