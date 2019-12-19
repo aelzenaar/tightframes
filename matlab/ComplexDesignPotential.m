@@ -15,7 +15,7 @@ classdef ComplexDesignPotential < DesignPotential
         end
         
         function epsilon = computeError(this,S)
-            epsilon = abs(this.coefficient_*sum(abs(S).^(2*this.t_),'all') - (this.n_^2));
+            epsilon = abs(this.coefficient_*sum(abs(S).^(2*this.t_),'all') - (sum(diag(S).^this.t_))^2);
         end
         
         function grad = computeGradient(this,S)
