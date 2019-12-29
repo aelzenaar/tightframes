@@ -13,7 +13,7 @@ profile clear
 profile on
 errorComputer = ComplexDesignPotential(d,n,t);
 A = getRandomComplexSeed(d,n,s,errorComputer,1);
-[result, errors, totalBadness] = iterateOnDesign(d, A, k, b, ap, 0, errorMultiplier, errorComputer, 1);
+[result, errors, totalBadness] = iterateOnDesign(d, A, k, b, ap, errorMultiplier, errorComputer, 1);
 profile off
 profile viewer
 
