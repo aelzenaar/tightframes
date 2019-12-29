@@ -8,12 +8,12 @@ s = 1e3; % Number of initial seeds
 b = 10;
 ap = 10; % Reduce if "got err: ..." value is becoming constant.
 errorMultiplier = 1e-3; % Reduce if badness proportion > 0.9ish.
-
+t
 profile clear
 profile on
 errorComputer = ComplexDesignPotential(d,n,t);
 A = getRandomComplexSeed(d,n,s,errorComputer,1);
-[result, errors, totalBadness] = iterateOnDesign(d, A, k, b, ap, 0, errorMultiplier, errorComputer, 1);
+[result, errors, totalBadness] = iterateOnDesign(d, A, k, b, ap, errorMultiplier, errorComputer, 1);
 profile off
 profile viewer
 
