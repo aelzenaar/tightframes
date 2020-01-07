@@ -21,14 +21,17 @@ recurse = (args.recursive == True)
 existing = args.existing
 
 if recurse:
-    mat_files = list(search_dir.glob('**/*.mat'))
+    mat_files = sorted(list(search_dir.glob('**/*.mat')))
 else:
-    mat_files = list(search_dir.glob('*.mat'))
+    mat_files = sorted(list(search_dir.glob('*.mat')))
 
 d = []
 n = []
 t = []
 k = []
+totalBadness = []
+errorMultiplier = []
+errorExp = []
 error = []
 error_short = []
 comment = []
@@ -66,6 +69,9 @@ for f in mat_files:
     fill(n,'n',int)
     fill(t,'t',int)
     fill(k,'k',int)
+    fill(errorMultiplier,'errorMultiplier',lambda val: '%E'%(val) )
+    fill(errorExp,'errorExp',float)
+    fill(totalBadness,'totalBadness',int)
     fill(error,'errors',lambda val: val[-1][0])
     fill(error_short,'errors',lambda val: '%E'%(val[-1][0]) )
     fill(comment,'comment',str)
@@ -86,9 +92,20 @@ with (output_dir/'index.html').open(mode='w') as f:
     <body>
         <h1>Index of generated designs</h1>
         <table border="1px" cellspacing="0" cellpadding="3">
-            <tr><th><i>d</i></th><th><i>n</i></th><th><i>t</i></th><th>iterations (<i>k</i>)</th><th>error (short)</th><th>error (long)</th><th>Comment</th><th>Link</th></tr>\n''')
+            <tr><th><i>d</i></th><th><i>n</i></th><th><i>t</i></th><th>iterations (<i>k</i>)</th><th>errorMultiplier</th><th>errorExp</th><th>error (short)</th><th>error (long)</th><th>badness proportion</th><th>Comment</th><th>Link</th></tr>\n''')
     for i in range(0,len(filenames)):
-        f.write(f'            <tr><td>{d[i]}</td><td>{n[i]}</td><td>{t[i]}</td><td>{k[i]}</td><td>{error_short[i]}</td><td>{error[i]}</td><td>{comment[i]}</td><td><a href="{filenames[i]}">{filenames[i]}</a></td></tr>\n')
+        f.write(f'            <tr><td>{d[i]}</td>\
+                              <td>{n[i]}</td>\
+                              <td>{t[i]}</td>\
+                              <td>{k[i]}</td>\
+                              <td>{errorMultiplier[i]}</td>\
+                              <td>{errorExp[i]}</td>\
+                              <td>{error_short[i]}</td>\
+                              <td>{error[i]}</td>\
+                              <td> {totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]} </td>\
+                              <td>{comment[i]}</td>\
+                              <td><a href="{filenames[i]}">{filenames[i]}</a></td></tr>\n'
+        )
     f.write(f'''
         </table>
         <footer>Generated: {datetime.today().ctime()}</footer>
