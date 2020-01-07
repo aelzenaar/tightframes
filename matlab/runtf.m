@@ -2,27 +2,27 @@
 d = 2;
 n = 12;
 t = 4;
-k = 1e5; % Number of iterations
-s = 1e3; % Number of initial seeds
+k = 4e7; % Number of iterations
+s = 1e7; % Number of initial seeds
 
 b = 10;
-ap = 10; % Reduce if "got err: ..." value is becoming constant.
-errorMultiplier = 1e-3; % Reduce if badness proportion > 0.9ish.
+errorMultiplier = 1e-2; % Reduce if badness proportion > 0.9ish.
+errorExp = 1.2;
+comment = '**VARYING VECTORS DIRECTLY**';
 
-profile clear
-profile on
+% profile clear
+% profile on
 errorComputer = ComplexDesignPotential(d,n,t);
 A = getRandomComplexSeed(d,n,s,errorComputer,1);
-[result, errors, totalBadness] = iterateOnDesign(d, A, k, b, ap, errorMultiplier, errorComputer, 1);
-profile off
-profile viewer
+[result, errors, totalBadness] = iterateOnDesign(A, k, b, errorMultiplier, errorExp, errorComputer, 1);
+% profile off
+% profile viewer
 
 disp(result);
 fprintf(1, 'Norm of final error %f\n', norm(errors(k)));
 fprintf(1, 'Total bad proportion %f\n', totalBadness./k);
-ootest = 1;
 save(sprintf('tf_run_%s.mat',datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS')),...
-    'result','errors','totalBadness','d','n','t','k','s','b','ap','errorMultiplier','ootest');
+    'result','errors','totalBadness','d','n','t','k','s','b','errorMultiplier','errorExp','comment');
 
 t = 1:length(errors);
 plot(t,errors);

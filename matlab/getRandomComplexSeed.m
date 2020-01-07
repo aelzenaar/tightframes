@@ -17,15 +17,14 @@
 %                            failed to improve the estimate by walking
 %                            down the gradient.
 function A = getRandomComplexSeed(d,n,s,errorComputer,fd)
-    A = zeros(n,n); % The "best" Gram matrix found so far.
+    A = zeros(d,n); % The "best" matrix found so far.
     error = inf; % The error associated with A
     
     % Check lots of random matrices to find a good starting point.
     for h = 1:s
-        % Produce a random n^2 Hermitian matrix B.
+        % Produce a random d x n matrix B.
         B = (randn(d,n) + 1i*randn(d,n)); % get a random set of n d-vectors
         B = B./vecnorm(B); % normalise all the vectors, column by column
-        B = B'*B; % make the matrix Hermitian by replacing it with its Gramian
         
         error_try = errorComputer.computeError(B);
         if(error_try < error)
