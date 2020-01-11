@@ -69,7 +69,7 @@ with smart_open(output_filename) as f:
     f.write(f'{var}:=Matrix({field},{rows},{cols},[\n')
     for i in range(0,rows):
         for j in range(0,cols):
-            f.write(f'    {reals[i][j]} + {imags[i][j]}*{unit}')
+            f.write(f'    {reals[i][j]:.40} + {imags[i][j]:.40}*{unit}')
             if not ((i == rows - 1) and (j == cols - 1)):
                 f.write(',\n')
     f.write('\n]);\n')
