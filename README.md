@@ -43,6 +43,9 @@ Remarks.
     to generate the design, as well as the design itself, and a list of the error of the design produced at each iteration. `search_designs.m` will produce
     a whole *directory* (in the current directory), named like `search_designs_D_T_YYYY_MM_DD_hh_mm_ss/`, which contains `.mat` files like those generated
     by `runtf.m` (named according to _n_) and plots of the associated errors.
+  * `runtf.m` takes an `errorMultiplier` parameter (the step size at each iteration is then `errorMultiplier * (error)^errorExp`); this needs to be chosen
+    by the user for a given _d_,_n_,_t_ triple and can be fiddly to do. An example of an automated method, which seems to work reasonably well, may be found
+    in `search_designs.m` (in particular, the for loop on `r_try`).
 
 ### Python scripts
 The Python scripts accept a `--help` argument. Here is a list of the scripts.

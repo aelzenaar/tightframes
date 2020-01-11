@@ -41,13 +41,14 @@ for n = n_min:n_max
         error = inf;
     else
         fprintf(1, '[n = %d] Found good step size. Iterating... ',n);
-        [result, errors, ~] = iterateOnDesign(result, slow_k, 2, 10^(-r), 1, errorComputer, log_file);
+        [result, errors, totalBadness] = iterateOnDesign(result, slow_k, 2, 10^(-r), 1, errorComputer, log_file);
         error = errors(end);
-        fprintf(1, 'done with final error %E\n',error);
+        fprintf(1, 'done with final error %E (badness proportion %f)\n',error, totalBadness/slow_k);
     end
     
     errorMultiplier = 10^(-r);
-    save(sprintf('%s/run_%d.mat',dirname,n), 'result','errors','d','n','t','errorMultiplier','comment');
+    k = slow_k;
+    save(sprintf('%s/run_%d.mat',dirname,n), 'result','errors','totalBadness','d','n','t','k','errorMultiplier','comment');
     plot(1:length(errors),errors);
     set(gca, 'YScale', 'log');
     saveas(gcf, sprintf('%s/run_%d_errors.png',dirname,n));

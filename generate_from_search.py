@@ -30,6 +30,8 @@ existing = args.existing
 mat_files = sorted(list(search_dir.glob('*.mat')))
 
 n = []
+k = []
+totalBadness = []
 errorMultiplier = []
 error = []
 error_short = []
@@ -66,7 +68,9 @@ for f in mat_files:
             array.append(form(this_one) if this_one != None else None)
 
     fill(n,'n',int)
+    fill(k,'k',int)
     fill(errorMultiplier,'errorMultiplier',lambda val: '%E'%(val) )
+    fill(totalBadness,'totalBadness',int)
     fill(error,'errors',lambda val: val[-1][0])
     fill(error_short,'errors',lambda val: '%E'%(val[-1][0]) )
 
@@ -109,6 +113,7 @@ with (output_dir/'index.html').open(mode='w') as f:
                                     <td>{errorMultiplier[i]}</td>
                                     <td>{error_short[i]}</td>
                                     <td>{error[i]}</td>
+                                    <td> {totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]} </td>\
                                     <td>{img_tag}</td>
                                     <td><a href="{filenames[i]}">{filenames[i]}</a></td>
                                 </tr>\n'''
