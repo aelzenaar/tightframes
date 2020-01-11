@@ -55,6 +55,6 @@ References
 ----------
 The canonical reference for the mathematics is the following book:
 
-**Waldron, Shayne F. D.** An introduction to finite tight frames. Applied and Numerical Harmonic Analysis. _Birkhäuser/Springer, New York_, 2018. xx+587 pp. ISBN: 978-0-8176-4814-5; 978-0-8176-4815-2 [http://www.ams.org/mathscinet-getitem?mr=3752185](MR3752185)
+**Waldron, Shayne F. D.** An introduction to finite tight frames. Applied and Numerical Harmonic Analysis. _Birkhäuser/Springer, New York_, 2018. xx+587 pp. ISBN: 978-0-8176-4814-5; 978-0-8176-4815-2 [MR3752185](http://www.ams.org/mathscinet-getitem?mr=3752185)
 
 See in particular chapter 6.
