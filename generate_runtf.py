@@ -5,7 +5,7 @@ import sys
 import shutil
 from datetime import datetime
 
-parser = argparse.ArgumentParser(description='Generate a database of designs from a given set of runtf output files.')
+parser = argparse.ArgumentParser(description='Generate a database of designs from a given set of runtf.m output files.')
 parser.add_argument('directory', metavar='DIR', help='directory to scan')
 parser.add_argument('-R','--recursive', action='store_true', help='scan DIR recursively')
 parser.add_argument('-e','--existing', action='count', default=0, help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
