@@ -96,7 +96,7 @@ with (output_dir/'index.html').open(mode='w') as f:
     </head>
     <body>
         <h1>Index of generated designs -- (d,t) = ({d},{t}) </h1>
-        <p><i>Generation time: {timestamp}
+        <p><i>Generation time for the designs: {timestamp}
         <table border="1px" cellspacing="0" cellpadding="3">
             <tr><th><i>n</i></th><th>errorMultiplier</th><th>error (short)</th><th>error (long)</th><th>error plot</th><th>Link</th></tr>\n''')
     for i in range(0,len(filenames)):
@@ -115,6 +115,6 @@ with (output_dir/'index.html').open(mode='w') as f:
         )
     f.write(f'''
         </table>
-        <footer>Generated: {datetime.today().ctime()}</footer>
+        <footer>Page generated: {datetime.today().ctime()}</footer>
     </body>
 </html>''')
