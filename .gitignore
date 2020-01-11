@@ -1,4 +1,5 @@
 *.mat
+*.magma
 *~
 
 ## Core latex/pdflatex auxiliary files:
