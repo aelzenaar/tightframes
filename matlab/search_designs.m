@@ -3,8 +3,8 @@
 
 t = 3;
 d = 2;
-n_min = 1;
-n_max = 10;
+n_min = guessOrderLowerBound(d,t);
+n_max = n_min*2;
 
 comment = 'search_designs';
 
@@ -23,7 +23,7 @@ for n = n_min:n_max
     fprintf(1, '[n = %d] Seed has error %E.\n',n,initialError);
     r = NaN;
     result = zeros(d,n);
-    for r_try = 0:10
+    for r_try = -10:10
         fprintf(1, '[n = %d] Trying for step size 10^-%d... ',n,r_try);
         [result, errors, ~] = iterateOnDesign(seed, fast_k, 2, 10^(-r_try), 1, errorComputer, log_file);
         if(errors(end) < initialError)

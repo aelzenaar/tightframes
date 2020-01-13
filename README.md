@@ -36,6 +36,7 @@ listed above should be decent examples of the usage of these utilities.
   * `iterateOnDesign` takes a starting matrix and a `DesignPotential` instance and tries to iterate it to compute
     a better design.
   * `compute3Products` takes a design and returns the list of its 3-products in ascending order.
+  * `guessOrderLowerBound`, which uses results of Delsarte, Goethals, and Seidel (1977) to bound below the sizes of possible designs.
 
 
 Remarks.
@@ -63,3 +64,5 @@ The canonical reference for the mathematics is the following book:
 **Waldron, Shayne F. D.** An introduction to finite tight frames. Applied and Numerical Harmonic Analysis. _Birkhäuser/Springer, New York_, 2018. xx+587 pp. ISBN: 978-0-8176-4814-5; 978-0-8176-4815-2 [MR3752185](http://www.ams.org/mathscinet-getitem?mr=3752185)
 
 See in particular chapter 6.
+
+For bounds on the lower size of designs, we use the following paper: P. Delsarte, J.M.Goethals, J.J.Seidel. "Spherical codes and designs", _Geometriae Dedicata_ 6 (1977) 363-388.
