@@ -27,7 +27,7 @@ function [result,errors,totalBadness] = iterateOnDesign(A, k, b, errorMultiplier
         errors(h) = error; % Log the best error we have right now.
         meanWalk = errorMultiplier .* error.^errorExp;
         if(badCount < b)
-            delta = random('Lognormal',log(meanWalk./(totalBadness + 1)),1);
+            delta = exp(randn() + log(meanWalk));
             A_new = A - delta.*errorComputer.computeGradient(A); % Pick a random matrix in the right direction.
         else
             fprintf(fd, 'Badness reached %d (total bad proportion %f), so randomly trying around.\n', badCount, totalBadness./h);

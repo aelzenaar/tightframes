@@ -8,7 +8,7 @@ This software was written by me under the supervision of [Shayne Waldron](https:
 Requirements
 ------------
 
-  * MATLAB (at least R2018b) with the Statistics toolbox
+  * MATLAB (at least R2018b).
 
 For the Python utilities, you also need:
   * Python 3._x_, where _x_ is a version [supported](https://au.mathworks.com/help/matlab/matlab_external/system-requirements-for-matlab-engine-for-python.html) by
