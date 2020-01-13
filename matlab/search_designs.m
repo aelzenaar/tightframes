@@ -51,7 +51,7 @@ for n = n_min:n_max
     save(sprintf('%s/run_%d.mat',dirname,n), 'result','errors','totalBadness','d','n','t','k','errorMultiplier','comment');
     plot(1:length(errors),errors);
     set(gca, 'YScale', 'log');
-    saveas(gcf, sprintf('%s/run_%d_errors.png',dirname,n));
+    saveas(gcf, sprintf('%s/run_%03d_errors.png',dirname,n));
     close(gcf);
 end
 
