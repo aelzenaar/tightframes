@@ -8,7 +8,7 @@ n_max = 10;
 
 comment = 'search_designs';
 
-s = 1000; % Number of seeds to try first
+s = 1e5; % Number of seeds to try first
 fast_k = 1000; % Number of times to iterate to find a good initial step size
 slow_k = 1e7; % Number of iterations for the proper iteration.
 
