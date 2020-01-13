@@ -35,10 +35,10 @@ for n = n_min:n_max
         end
     end
     
-    if isnan(r)
+    if isnan(r) || errors(end) > 100
         fprintf(1, '[n = %d] Failed to find good step size.\n',n);
         result = NaN(d,n);
-        error = inf;
+        error = errors(end);
     else
         fprintf(1, '[n = %d] Found good step size. Iterating... ',n);
         [result, errors, totalBadness] = iterateOnDesign(result, slow_k, 2, 10^(-r), 1, errorComputer, log_file);
@@ -48,7 +48,9 @@ for n = n_min:n_max
     
     errorMultiplier = 10^(-r);
     k = slow_k;
-    save(sprintf('%s/run_%d.mat',dirname,n), 'result','errors','totalBadness','d','n','t','k','errorMultiplier','comment');
+    save(sprintf('%s/run_%03d.mat',dirname,n), 'result','errors','totalBadness','d','n','t','k','errorMultiplier','comment');
+    
+    ghostFigure = figure('Visible',false);
     plot(1:length(errors),errors);
     set(gca, 'YScale', 'log');
     saveas(gcf, sprintf('%s/run_%03d_errors.png',dirname,n));
