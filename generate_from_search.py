@@ -102,18 +102,22 @@ with (output_dir/'index.html').open(mode='w') as f:
         <h1>Index of generated designs -- (d,t) = ({d},{t}) </h1>
         <p><i>Generation time for the designs: {timestamp}
         <table border="1px" cellspacing="0" cellpadding="3">
-            <tr><th><i>n</i></th><th>errorMultiplier</th><th>error (short)</th><th>error (long)</th><th>error plot</th><th>Link</th></tr>\n''')
+            <tr><th><i>n</i></th><th>errorMultiplier</th><th>error (short)</th><th>error (long)</th><th>badness proportion</th><th>error plot</th><th>Link</th></tr>\n''')
     for i in range(0,len(filenames)):
         if error_img[i] == None:
             img_tag = '(no image)'
         else:
-            img_tag = f'<img src="{error_img[i]}" width="50%" alt="Error plot for this run."/>'
+            img_tag = f'<img src="{error_img[i]}" width="500px" alt="Error plot for this run."/>'
+        if totalBadness[i] == None or k[i] == None:
+            bad_tag = '(no badness)'
+        else:
+            bad_tag = f'{totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]}'
         f.write(f'''            <tr>
                                     <td>{n[i]}</td>
                                     <td>{errorMultiplier[i]}</td>
                                     <td>{error_short[i]}</td>
                                     <td>{error[i]}</td>
-                                    <td> {totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]} </td>\
+                                    <td>{bad_tag}</td>\
                                     <td>{img_tag}</td>
                                     <td><a href="{filenames[i]}">{filenames[i]}</a></td>
                                 </tr>\n'''

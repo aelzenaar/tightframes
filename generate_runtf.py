@@ -102,7 +102,7 @@ with (output_dir/'index.html').open(mode='w') as f:
                               <td>{errorExp[i]}</td>\
                               <td>{error_short[i]}</td>\
                               <td>{error[i]}</td>\
-                              <td> {totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]} </td>\
+                              <td>{totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]} </td>\
                               <td>{comment[i]}</td>\
                               <td><a href="{filenames[i]}">{filenames[i]}</a></td></tr>\n'
         )
