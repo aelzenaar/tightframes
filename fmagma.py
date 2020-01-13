@@ -27,6 +27,7 @@ parser.add_argument('-e','--existing', action='count', default=0, help='connect 
 parser.add_argument('-u','--unit', default='i', help='name of complex unit (default is `i\')')
 parser.add_argument('-f','--field', default='CC', help='name of complex field (default is `CC\')')
 parser.add_argument('-v','--var', default='V', help='name of array variable to product (default is `V\')')
+parser.add_argument('-a','--accuracy', default=6,type=int, help='number of decimal places to output (default is 6)')
 
 args = parser.parse_args()
 filename = Path(args.filename)
@@ -35,6 +36,7 @@ output_filename = args.output
 unit = args.unit
 field = args.field
 var = args.var
+accuracy = args.accuracy
 
 if not filename.exists():
     sys.exit('Input file does not exist.')
@@ -69,7 +71,7 @@ with smart_open(output_filename) as f:
     f.write(f'{var}:=Matrix({field},{rows},{cols},[\n')
     for i in range(0,rows):
         for j in range(0,cols):
-            f.write(f'    {reals[i][j]:.40} + {imags[i][j]:.40}*{unit}')
+            f.write(f'    {reals[i][j]:.{accuracy}} + {imags[i][j]:.{accuracy}}*{unit}')
             if not ((i == rows - 1) and (j == cols - 1)):
                 f.write(',\n')
     f.write('\n]);\n')
