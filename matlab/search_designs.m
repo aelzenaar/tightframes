@@ -24,7 +24,7 @@ for n = n_min:n_max
     r = NaN;
     result = zeros(d,n);
     for r_try = -10:10
-        fprintf(1, '[n = %d] Trying for step size 10^-%d... ',n,r_try);
+        fprintf(1, '[n = %d] Trying for step size 10^%d... ',n,-r_try);
         [result, errors, ~] = iterateOnDesign(seed, fast_k, 2, 10^(-r_try), 1, errorComputer, log_file);
         if(errors(end) < initialError)
             fprintf(1, 'Was good.\n');
