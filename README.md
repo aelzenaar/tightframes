@@ -3,6 +3,8 @@ design-finder
 
 A collection of utilities to generate spherical (_t_,_t_)-designs (henceforth, _t_-designs) in **C**^d with given parameters.
 
+This software was written by me under the supervision of [Shayne Waldron](https://www.math.auckland.ac.nz/~waldron/).
+
 Requirements
 ------------
 
