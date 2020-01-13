@@ -34,6 +34,8 @@ function [result,errors,totalBadness] = iterateOnDesign(A, k, b, errorMultiplier
             A_new = A + randn(size(A)) .* meanWalk;
         end
         
+        
+        A_new = A_new./vecnorm(A_new); % normalise all the vectors, column by column
         error_new = errorComputer.computeError(A_new);
 
         if(error_new < error)
