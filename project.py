@@ -21,7 +21,7 @@ def smart_open(filename=None):
         if fh is not sys.stdout:
             fh.close()
 
-parser = argparse.ArgumentParser(description='Format a given spherical design in Magma matrix format')
+parser = argparse.ArgumentParser(description='Format a given spherical design in TiKZ format.')
 parser.add_argument('filename', metavar='MATFILE', help='.mat file to read from')
 parser.add_argument('-o','--output', default=None, help='output file (default is stdout)')
 parser.add_argument('-e','--existing', action='count', default=0, help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
@@ -29,6 +29,7 @@ parser.add_argument('-a','--multi-axis', action='store_true', default=False, hel
 parser.add_argument('-d','--domestic-lines', action = 'store_true', default=False, help='draw a cycle around the coordinates of a single direction')
 parser.add_argument('-i','--international-lines', action = 'store_true', default=False, help='draw coloured lines between the coordinates of a single point')
 parser.add_argument('-r','--rays', action = 'store_true', default=False, help='draw rays for each coordinate')
+parser.add_argument('-s','--scale', type=int, default=4, help='scaling factor for graph')
 
 
 args = parser.parse_args()
@@ -77,7 +78,7 @@ for i in range(0,n):
 # Below this point are the functions called in the below loop to actually generate LaTeX code.
 #
 
-width = 4
+width = args.scale
 
 def offset(j):
     return j*2.5*width
