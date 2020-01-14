@@ -6,6 +6,12 @@ import shutil
 from random import random
 import colorsys
 
+try:
+    from glasbey import Glasbey
+    smartcol = True
+except:
+    smartcol = False
+
 import contextlib
 
 @contextlib.contextmanager
@@ -21,7 +27,7 @@ def smart_open(filename=None):
         if fh is not sys.stdout:
             fh.close()
 
-parser = argparse.ArgumentParser(description='Format a given spherical design in TiKZ format.')
+parser = argparse.ArgumentParser(description='Format a given spherical design in TiKZ format.', epilog='Smart colours are {0}available.'.format('' if smartcol else 'not '))
 parser.add_argument('filename', metavar='MATFILE', help='.mat file to read from')
 parser.add_argument('-o','--output', default=None, help='output file (default is stdout)')
 parser.add_argument('-e','--existing', action='count', default=0, help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
@@ -30,6 +36,7 @@ parser.add_argument('-d','--domestic-lines', action = 'store_true', default=Fals
 parser.add_argument('-i','--international-lines', action = 'store_true', default=False, help='draw coloured lines between the coordinates of a single point')
 parser.add_argument('-r','--rays', action = 'store_true', default=False, help='draw rays for each coordinate')
 parser.add_argument('-s','--scale', type=int, default=4, help='scaling factor for graph')
+parser.add_argument('-f','--fast-colours', action = 'store_true', default=False, help='use fast colours, not smart colours')
 
 
 args = parser.parse_args()
@@ -44,6 +51,7 @@ multi_axis = args.multi_axis
 domestic_lines = args.domestic_lines
 international_lines = args.international_lines
 rays = args.rays
+smartcol = (not args.fast_colours) and smartcol
 
 # -e but not -ee specified, so print usage and wait for user OK.
 if existing == 1:
@@ -70,9 +78,14 @@ reals = eng.real(result)
 imags = eng.imag(result)
 
 # Pick n colours.
-colours = []
-for i in range(0,n):
-    colours.append(colorsys.hls_to_rgb(i/(n-1), 0.5 + random()/100, 0.9 + random()/100) )
+if smartcol:
+    gb = Glasbey(lightness_range=(40,60))
+    p = gb.generate_palette(size=n)
+    colours = gb.convert_palette_to_rgb(p)
+else:
+    colours = []
+    for i in range(0,n):
+        colours.append(colorsys.hls_to_rgb(i/n, 0.5 + random()/100, 0.9 + random()/100) )
 
 #
 # Below this point are the functions called in the below loop to actually generate LaTeX code.
@@ -114,7 +127,7 @@ def draw_arrow_on_axis(j_from, x_from, y_from, j_to, x_to, y_to, colour, thickne
 '''
 
 def rgb_to_colour_string(colour):
-    return f'{{rgb:red,{colour[0]:.3};green,{colour[1]:.3};blue,{colour[2]:.3}}}'
+    return f'{{rgb:red,{colour[0]/3.0:.3};green,{colour[1]/3.0:.3};blue,{colour[2]/3.0:.3}}}'
 
 #
 # Now the loop that actually produces the output.
