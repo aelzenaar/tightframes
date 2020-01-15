@@ -112,7 +112,7 @@ with (output_dir/'index.html').open(mode='w') as f:
             bad_tag = '(no badness)'
         else:
             bad_tag = f'{totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]}'
-        f.write(f'''            <tr>
+        f.write(f'''            <tr style="{'background-color: #87c9ff;' if error[i] < 1 else ''}">
                                     <td>{n[i]}</td>
                                     <td>{errorMultiplier[i]}</td>
                                     <td>{error_short[i]}</td>
