@@ -25,12 +25,19 @@ function [result,errors,totalBadness] = iterateOnDesign(A, k, b, errorMultiplier
 
     for h = 1:k
         errors(h) = error; % Log the best error we have right now.
-        meanWalk = errorMultiplier .* error.^errorExp;
-        if(badCount < b)
+        meanWalk = (errorMultiplier .* error.^errorExp)/(totalBadness + 1);
+        
+        % We walk down the *gradient* if either badCount is low (so we have
+        % been succeeding), or every so often (every b times) otherwise -
+        % this second option is here because as the badness increases the
+        % ball we look at shrinks, so if we fail often enough (either
+        % gradient-walking or otherwise) we should increase the chance of a
+        % gradient walk working as time moves forward.
+        if (badCount < b) || (mod(badCount, b) == 0)
             delta = exp(randn() + log(meanWalk));
             A_new = A - delta.*errorComputer.computeGradient(A); % Pick a random matrix in the right direction.
         else
-            fprintf(fd, 'Badness reached %d (total bad proportion %f), so randomly trying around.\n', badCount, totalBadness./h);
+            fprintf(fd, '    (Walking randomly.)\n');
             A_new = A + randn(size(A)) .* meanWalk;
         end
         
@@ -39,14 +46,16 @@ function [result,errors,totalBadness] = iterateOnDesign(A, k, b, errorMultiplier
         error_new = errorComputer.computeError(A_new);
 
         if(error_new < error)
-            fprintf(fd, '****  Better found, %d/%d (had err: %e, got err: %e)\n', h, k, error, error_new);
+            fprintf(fd, '*** Better found,   %d/%d (had err: %e, got err: %e) \t\t Badness is %d/%d = %f.\n',...
+                h, k, error, error_new, badCount, k, badCount/k);
             error = error_new;
             A = A_new;
             badCount = 0;
         else
             badCount = badCount + 1;
             totalBadness = totalBadness + 1;
-            fprintf(fd, 'Nothing better, %d/%d (had err: %e, got err: %e)\n', h, k, error, error_new);
+            fprintf(fd, '    Nothing better, %d/%d (had err: %e, got err: %e) \t\t Badness is %d/%d = %f.\n',...
+                h, k, error, error_new, badCount, k, badCount/k);
         end
     end
     

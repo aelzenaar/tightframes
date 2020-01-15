@@ -18,6 +18,7 @@ A = getRandomComplexSeed(d,n,s,errorComputer,1);
 % profile off
 % profile viewer
 
+fprintf(1,'\n');
 disp(result);
 fprintf(1, 'Norm of final error %f\n', norm(errors(k)));
 fprintf(1, 'Total bad proportion %f\n', totalBadness./k);
