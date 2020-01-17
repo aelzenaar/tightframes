@@ -89,7 +89,7 @@ for f in mat_files:
         relative_image.parent.mkdir(parents=True,exist_ok=True)
         shutil.copy(this_image,relative_image)
     else:
-        error_image.append(None)
+        error_img.append(None)
 
 with (output_dir/'index.html').open(mode='w') as f:
     f.write(f'''<!DOCTYPE html>
