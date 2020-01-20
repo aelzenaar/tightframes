@@ -26,6 +26,7 @@ parser = argparse.ArgumentParser(description='Format a given spherical design in
 parser.add_argument('filename', metavar='MATFILE', help='.mat file to read from')
 parser.add_argument('-o','--output', default=None, help='output file (default is stdout)')
 parser.add_argument('-e','--existing', action='count', default=0, help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
+parser.add_argument('-s','--scale', type=int, default=4, help='scaling factor for graph')
 
 
 args = parser.parse_args()
@@ -61,6 +62,7 @@ n = int(eng.size(result, 2))
 print(d,n)
 reals = eng.real(result)
 imags = eng.imag(result)
+scale = args.scale
 
 # Pick n colours.
 colours = []
@@ -97,7 +99,7 @@ def peroration():
 # Take a Point3D and return the projection from projectionPoint onto Y = projectionPlaneY.
 def project_point(P):
   l = (projectionPlaneY - projectionPoint.y)/(P.y - projectionPoint.y)
-  return vecsum( scamul(l, vecsum( P, scamul(-1, projectionPoint) ) ), projectionPoint) # l*(P-projectionPoint) + projectionPoint
+  return scamul(scale, vecsum( scamul(l, vecsum( P, scamul(-1, projectionPoint) ) ), projectionPoint)) # scale*[l*(P-projectionPoint) + projectionPoint]
 
 # Helper function to produce code for a new axis at the right offset in TiKZ.
 def axes_arrows(num, coordList):

@@ -69,7 +69,7 @@ python3.7 ../project.py 2_12_4.mat -arif -o 2_12_4.tex && pdflatex 2_12_4 && con
   * `project3d.py`, which takes a single `.mat` file and produces a 3D version of the `project.py` LaTeX/TiKZ visualisation. The image at the top of
     this README was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running the following command in `examples`:
 ```
-python3.7 ../project3d.py 2_12_4.mat -o 2_12_4_3D.tex -ee && pdflatex 2_12_4_3D && convert -resize 500x500 -density 150 2_12_4_3D.pdf -quality 100 -flatten -sharpen 0x1.0 2_12_4_3D.png
+ython3.7 ../project3d.py 2_12_4.mat -o 2_12_4_3D.tex -ee && pdflatex 2_12_4_3D && convert -flatten -density 150 2_12_4_3D.pdf -quality 100 2_12_4_3D.png
 ```
 
 References
