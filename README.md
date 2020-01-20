@@ -59,10 +59,19 @@ The Python scripts accept a `--help` argument. Here is a list of the scripts.
   * `generate_from_search.py`, which takes a *single* output directory from `search_designs.m` and produces a nice HTML rendering (for certain values of 'nice').
   * `fmagma.py`, which takes a single `.mat` file and produces a `.magma` file containing the same design.
   * `project.py`, which takes a single `.mat` file and produces a simple LaTeX/TiKZ visualisation. There are a number of configuration options; the image below
-    was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running `python3.7 ../project.py 2_12_4.mat -arif -o 2_12_4.tex && pdflatex 2_12_4 && convert 2_12_4.pdf 2_12_4.png`
+    was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running
+    ```
+python3.7 ../project.py 2_12_4.mat -arif -o 2_12_4.tex && pdflatex 2_12_4 && convert 2_12_4.pdf 2_12_4.png
+    ```
     in `examples/`.
+
+![an example image from project.py](examples/2_12_4.png)
+
   * `project3d.py`, which takes a single `.mat` file and produces a 3D version of the `project.py` LaTeX/TiKZ visualisation. The image at the top of
-    this README was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running `python3.7 ../project3d.py 2_12_4.mat -o 2_12_4_3D.tex && pdflatex 2_12_4_3D && convert 2_12_4_3D.pdf 2_12_4_3D.png`
+    this README was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running
+    ```
+python3.7 ../project3d.py 2_12_4.mat -o 2_12_4_3D.tex -ee && pdflatex 2_12_4_3D && convert -resize 500x500 -density 150 2_12_4_3D.pdf -quality 100 -flatten -sharpen 0x1.0 2_12_4_3D.png
+    ```
     in `examples/`.
 
 References
