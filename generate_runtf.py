@@ -117,6 +117,10 @@ with (output_dir/'index.html').open(mode='w') as f:
                 <th>link to .mat file</th>
             </tr>\n''')
     for i in range(0,len(filenames)):
+        if totalBadness[i] == None or k[i] == None:
+            bad_tag = '(no badness)'
+        else:
+            bad_tag = f'{totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]}'
         f.write(f'''            <tr style="background-color: {'#ff8080' if error[i] < 0.001 else '#ffdd80' if error[i] < 0.01 else '#87c9ff;' if error[i] < 0.1 else '#80ffc2' if error[i] < 1 else '#fff'}">
                 <td>{d[i]}</td>
                 <td>{n[i]}</td>
@@ -126,7 +130,7 @@ with (output_dir/'index.html').open(mode='w') as f:
                 <td>{errorExp[i]}</td>
                 <td>{error_short[i]}</td>
                 <td>{error[i]}</td>
-                <td>{totalBadness[i]}/{k[i]} = {totalBadness[i]/k[i]} </td>
+                <td>{bad_tag}</td>
                 <td>{comment[i]}</td>
                 <td><a href="{filenames[i]}">{filenames[i]}</a></td>
             </tr>'''
