@@ -15,10 +15,11 @@ classdef ComplexDesignPotential < DesignPotential
         end
         
         function epsilon = computeError(this,S)
+            n = this.n_;
             t = this.t_;
             coefficient = this.coefficient_;
             gram = S'*S;
-            epsilon = abs(coefficient*sum(abs(gram).^(2*t),'all') - (sum(diag(gram).^t))^2);
+            epsilon = abs(coefficient*sum(abs(gram).^(2*t),'all') - n^2);
         end
         
         function grad = computeGradient(this,S)
@@ -31,7 +32,7 @@ classdef ComplexDesignPotential < DesignPotential
             for row = 1:d
                 for col = 1:n
                     sum1 = abs(gram(col,:)).^(2*t - 2) .* transpose(gram(:,col)) .* S(row, :);
-                    grad(row,col) = 4*coefficient*t*sum(sum1) - 4*t*sum(diag(gram).^(t)).*gram(col,col).^(t-1).*S(row,col);
+                    grad(row,col) = 4*coefficient*t*sum(sum1) - 4*t*n.*S(row,col);
                 end
             end
         end
