@@ -8,9 +8,7 @@ n_max = n_min*2;
 
 comment = 'search_designs';
 
-s = 1e5; % Number of seeds to try first
-fast_k = 1000; % Number of times to iterate to find a good initial step size
-slow_k = 1e7; % Number of iterations for the proper iteration.
+fprintf(1, "Searching (d,t) = (%d,%d) in n = %d:%d\n", d, t, n_min, n_max);
 
 dirname = sprintf('search_designs_%d_%d_%s',d,t,datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS'));
 mkdir(dirname);
@@ -35,7 +33,7 @@ for n = n_min:n_max
         end
     end
     
-    if isnan(r) || errors(end) > 100
+    if isnan(r)
         fprintf(1, '[n = %d] Failed to find good step size.\n',n);
         result = NaN(d,n);
         error = errors(end);

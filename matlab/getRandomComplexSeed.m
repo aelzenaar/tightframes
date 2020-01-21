@@ -30,10 +30,12 @@ function A = getRandomComplexSeed(d,n,s,errorComputer,fd)
         if(error_try < error)
             error = error_try;
             A = B;
-            fprintf(fd, 'Seeding, %d/%d (best found err: %f, new best)\n', h, s, error);
-        else
+            if fd ~= 0
+                fprintf(fd, 'Seeding, %d/%d (best found err: %f, new best)\n', h, s, error);
+            end
         end
-        drawnow('update');
     end
-    fprintf(fd, 'Found best seed with error %f.\n\n', error);
+    if fd ~= 0
+        fprintf(fd, 'Found best seed with error %f.\n\n', error);
+    end
 end

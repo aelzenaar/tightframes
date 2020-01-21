@@ -1,4 +1,4 @@
-% Iterate on the given Gram matrix A to produce a better design.
+% Iterate on the given d x n matrix A to produce a better design, using a naive method.
 %
 % Parameters: A - initial matrix for iteration.
 %             k - number of iterations to run for.
@@ -19,13 +19,14 @@
 %                            down the gradient.
 function [result,errors,totalBadness] = iterateOnDesign(A, k, b, errorMultiplier,errorExp, errorComputer, fd)
     error = errorComputer.computeError(A);
+    grad = errorComputer.computeGradient(A);
     errors = zeros(k,1);
     badCount = 0; % Iterations since we last improved things by walking down the gradient.
     totalBadness = 0; % Total number of times walking down the gradient didn't work - if this is large, we decrease our step size accordingly.
 
     for h = 1:k
         errors(h) = error; % Log the best error we have right now.
-        meanWalk = (errorMultiplier .* error.^errorExp)/(totalBadness + 1);
+        meanWalk = (errorMultiplier .* error.^errorExp);
         
         % We walk down the *gradient* if either badCount is low (so we have
         % been succeeding), or every so often (every b times) otherwise -
@@ -34,10 +35,10 @@ function [result,errors,totalBadness] = iterateOnDesign(A, k, b, errorMultiplier
         % gradient-walking or otherwise) we should increase the chance of a
         % gradient walk working as time moves forward.
         if (badCount < b) || (mod(badCount, b) == 0)
-            delta = exp(randn() + log(meanWalk));
-            A_new = A - delta.*errorComputer.computeGradient(A); % Pick a random matrix in the right direction.
+            delta = (meanWalk/6) * randn() + meanWalk;
+            A_new = A - delta.*transpose(pinv(grad)); % Pick a random matrix in the right direction.
         else
-            fprintf(fd, '    (Walking randomly.)\n');
+%             fprintf(fd, '    (Walking randomly.)\n');
             A_new = A + randn(size(A)) .* meanWalk;
         end
         
@@ -46,16 +47,21 @@ function [result,errors,totalBadness] = iterateOnDesign(A, k, b, errorMultiplier
         error_new = errorComputer.computeError(A_new);
 
         if(error_new < error)
-            fprintf(fd, '*** Better found,   %d/%d (had err: %e, got err: %e) \t\t Badness is %d/%d = %f.\n',...
-                h, k, error, error_new, badCount, k, badCount/k);
+            if(fd ~= 0)
+                fprintf(fd, '*** Better found,\t\t%d/%d (had err: %e, got err: %e)\tBadness is %d (%f).\n',...
+                    h, k, error, error_new, totalBadness, totalBadness/h);
+            end
             error = error_new;
             A = A_new;
+            grad = errorComputer.computeGradient(A_new);
             badCount = 0;
         else
             badCount = badCount + 1;
             totalBadness = totalBadness + 1;
-            fprintf(fd, '    Nothing better, %d/%d (had err: %e, got err: %e) \t\t Badness is %d/%d = %f.\n',...
-                h, k, error, error_new, badCount, k, badCount/k);
+            if(fd ~= 0)
+                fprintf(fd, '    Nothing better,\t\t%d/%d (had err: %e, got err: %e)\tBadness is %d (%f).\n',...
+                    h, k, error, error_new, totalBadness, totalBadness/h);
+            end
         end
     end
     
