@@ -14,7 +14,6 @@ fprintf(1, "Searching (d,t) = (%d,%d) in n = %d:%d\n", d, t, n_min, n_max);
 
 dirname = sprintf('search_designsMO_%d_%d_%s',d,t,datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS'));
 mkdir(dirname);
-warning('off', 'manopt:getHessian:approx')
 
 for n = n_min:n_max
     errorComputer = ComplexDesignPotential(d,n,t);

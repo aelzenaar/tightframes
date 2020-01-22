@@ -17,13 +17,18 @@ function [result,errors, kprime] = iterateOnDesignMO(A, k, errorComputer)
     if any(isnan(A))
         A = [];
     end
+    
+    options.maxiter = k;
+    options.verbosity = 0;
+    warning('off', 'manopt:getHessian:approx')
 
     problem.M = obliquecomplexfactory(d,n);
     problem.cost = @(x) errorComputer.computeError(x);
     problem.egrad = @(x) errorComputer.computeGradient(x);
-    options.maxiter = k;
+    
     [A, ~, info, ~] = trustregions(problem,A,options);
-    errors = [info.cost];
+    
     result = A;
+    errors = [info.cost];
     kprime = length(errors);
 end
