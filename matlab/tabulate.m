@@ -4,10 +4,12 @@
 t_min = 3;
 d_min = 2;
 
+list_from = 12;
+
 k = Inf; % Number of iterates
 n_max = Inf; % Number of vectors to check up to
-max_iter_each_time = 1e3; % Number of iterations for each (d,n,t) triplet
-threshold = 10e-10; % Guess we have a design if error < threshold/
+max_iter_each_time = 1e2; % Number of iterations for each (d,n,t) triplet
+threshold = 10e-10; % Guess we have a design if error < threshold.
 
 dirname = sprintf('tabulate_%s',datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS'));
 mkdir(dirname);
@@ -16,7 +18,9 @@ fd = fopen(sprintf('%s/results.csv',dirname), 'w');
 % We want to run until the heat death of the universe.
 warning('off','MATLAB:warn_truncate_for_loop_index');
 
-for h = 1:k
+fprintf(fd, 't,d,n,filename,error image,final error\n');
+
+for h = list_from:k
     % Apply inverse Cantor pairing to h
     % (https://en.wikipedia.org/wiki/Pairing_function#Inverting_the_Cantor_pairing_function)
     w = floor((sqrt(8*h+1)-1)/2);
@@ -29,8 +33,7 @@ for h = 1:k
     
     n_min = guessOrderLowerBound(d,t);
     
-    fprintf(1, "[d = %d, t = %d] Searching in n = %d:%d\n", d, t, n_min, n_max);
-    fprintf(fd, 't,d,n,filename,error image,final error\n');
+    fprintf(1, '[d = %d, t = %d] Searching in n = %d:%d\n', d, t, n_min, n_max);
     for n = n_min:n_max
         fprintf(1, '[d = %d, t = %d, n = %d] Iterating... ',d, t, n);
         errorComputer = ComplexDesignPotential(d,n,t);
@@ -57,6 +60,4 @@ for h = 1:k
         end
         fprintf(1,'\n');
     end
-    
-    
 end
