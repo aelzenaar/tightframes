@@ -34,6 +34,7 @@ for h = list_from:k
     n_min = guessOrderLowerBound(d,t);
     
     fprintf(1, '[d = %d, t = %d] Searching in n = %d:%d\n', d, t, n_min, n_max);
+    fprintf(1, 'Output directory is: %s\n', dirname);
     for n = n_min:n_max
         fprintf(1, '[d = %d, t = %d, n = %d] Iterating... ',d, t, n);
         errorComputer = ComplexDesignPotential(d,n,t);
