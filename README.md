@@ -5,7 +5,9 @@ A collection of utilities to generate spherical (_t_,_t_)-designs (henceforth, _
 
 This software was written by me under the supervision of [Shayne Waldron](https://www.math.auckland.ac.nz/~waldron/).
 
-![an example image from project3d.py](examples/2_12_4_3D.png)
+_A spherical (3,3)-design of 157 vectors in **C**^5_
+![a spherical design of 157 vectors](examples/157_vecs.png)
+
 
 Requirements
 ------------
@@ -75,11 +77,13 @@ python3.7 ../project.py 2_12_4.mat -arif -o 2_12_4.tex && pdflatex 2_12_4 && con
 
 ![an example image from project.py](examples/2_12_4.png)
 
-  * `project3d.py`, which takes a single `.mat` file and produces a 3D version of the `project.py` LaTeX/TiKZ visualisation. The image at the top of
-    this README was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running the following command in `examples`:
+  * `project3d.py`, which takes a single `.mat` file and produces a 3D version of the `project.py` LaTeX/TiKZ visualisation. The image below
+    was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running the following command in `examples`:
 ```
-ython3.7 ../project3d.py 2_12_4.mat -o 2_12_4_3D.tex -ee && pdflatex 2_12_4_3D && convert -flatten -density 150 2_12_4_3D.pdf -quality 100 2_12_4_3D.png
+python3.7 ../project3d.py 2_12_4.mat -o 2_12_4_3D.tex -ee && pdflatex 2_12_4_3D && convert -flatten -density 150 2_12_4_3D.pdf -quality 100 2_12_4_3D.png
 ```
+
+![an example image from project3d.py](examples/2_12_4_3D.png)
 
 References
 ----------
