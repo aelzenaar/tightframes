@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+import numpy
 
 class DesignField(Enum):
   """The field of definition of a spherical design."""
@@ -43,7 +44,14 @@ class SphericalDesign():
     self.field = field
     self.design_type = design_type
     self.error = error
+    self._gramian = None
 
     if matrix is not None and matrix.shape != (d,n):
       raise DimensionError((d,n), matrix.shape)
     self.matrix = matrix
+
+  @property
+  def gramian(self):
+    if self._gramian is not None:
+      return self._gramian
+    return numpy.matmul(self.matrix.conj().T, self.matrix)
