@@ -52,6 +52,6 @@ class SphericalDesign():
 
   @property
   def gramian(self):
-    if self._gramian is not None:
-      return self._gramian
-    return numpy.matmul(self.matrix.conj().T, self.matrix)
+    if self._gramian is None:
+      self._gramian = numpy.matmul(self.matrix.conj().T, self.matrix)
+    return self._gramian
