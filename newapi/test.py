@@ -8,8 +8,7 @@ numpy.set_printoptions(linewidth = int(columns))
 
 with tfpy.MatlabAdapter(existing = True) as ma:
   identity = tfpy.SphericalDesign(3,3,1,tfpy.DesignField.REAL, tfpy.DesignType.EQUAL_NORM, numpy.array([[1,0,0],[0,1,0],[0,0,1]]))
-  identity_prods = ma.compute_triple_products(identity)
-  print(f'[3x3 identity] Triple products: {identity_prods}')
+  print(f'[3x3 identity] Triple products: {identity.triple_products}')
 
   design = ma.produce_design(3,6,2, tfpy.DesignField.REAL, tfpy.DesignType.EQUAL_NORM)
   print(f'[Equiangular R^3, equal norm] Best error: {design.error} ')
@@ -44,4 +43,5 @@ with tfpy.MatlabAdapter(existing = True) as ma:
     norms.append(numpy.linalg.norm(vector))
   print(f'[orthonormal basis in C^5] Norms of vectors: {numpy.array(norms)} ')
   print(f'[orthonormal basis in C^5] Gramian:\n{design.gramian} ')
-  print(f'[orthonormal basis in C^5] Triple products: {ma.compute_triple_products(design)}')
+  print(f'[orthonormal basis in C^5] Triple products: {design.triple_products}')
+  print(f'[orthonormal basis in C^5] Triple product sanity check (should be zero): {design.triple_products - ma.compute_triple_products(design)}')
