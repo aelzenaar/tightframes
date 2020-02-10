@@ -32,7 +32,7 @@ def triples(lst):
       for k in range(n):
         yield lst[i],lst[j],lst[k]
 
-class SphericalDesign():
+class SphericalDesign(object):
   """A class representing a spherical t-design in Python.
 
   Attributes:
@@ -74,3 +74,33 @@ class SphericalDesign():
       print(self._triple_products)
 
     return self._triple_products
+
+  @classmethod
+  def from_dict(cls, dct):
+    if 'matrix' in dct:
+      matrix = dct['matrix']
+    else:
+      matrix = None
+
+    new_design = cls(dct['d'], dct['n'], dct['t'], DesignType(dct['field']), DesignType(dct['design_type']), matrix)
+
+    if 'error' in dct:
+      new_design.error = dct['error']
+    if 'triple_products' in dct:
+      new_design._triple_products = dct['triple_products']
+    if 'gramian' in dct:
+      new_design._gramian = dct['gramian']
+
+  def to_dict(self):
+    dct = dict(self)
+
+    if '_gramian' in dct:
+      dct['gramian'] = dct.pop('_gramian')
+
+    if '_triple_products' in dct:
+      dct['triple_products'] = dct.pop('_triple_products')
+
+    dct['field'] = dct['field'].value
+    dct['design_type'] = dct['design_type'].value
+
+    return dct

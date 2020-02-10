@@ -45,3 +45,4 @@ with tfpy.MatlabAdapter(existing = True) as ma:
   print(f'[orthonormal basis in C^5] Gramian:\n{design.gramian} ')
   print(f'[orthonormal basis in C^5] Triple products: {design.triple_products}')
   print(f'[orthonormal basis in C^5] Triple product sanity check (should be zero): {design.triple_products - ma.compute_triple_products(design)}')
+
