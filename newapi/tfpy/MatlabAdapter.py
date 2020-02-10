@@ -6,7 +6,7 @@ matlab_dir = pathlib.Path(__file__).absolute().parent.parent / "matlab"
 import tfpy.base
 import numpy
 
-class MatlabAdapter():
+class MatlabAdapter(object):
   """Encapsulate the MATLAB API for Python use.
 
     This class is a context manager that interfaces with a MATLAB instance on behalf of
@@ -36,6 +36,7 @@ class MatlabAdapter():
   def __exit__(self, exc_type, exc_value, traceback):
     if not(self.existing):
       self.engine.quit()
+    return False # Don't catch exceptions; in particular, we need GeneratorExit to fall through.
 
   def numpy_to_matlab_array(self, array):
     "Convert a NumPy array to one that can be passed into the MATLAB API."
@@ -56,6 +57,16 @@ class MatlabAdapter():
   def produce_design(self, d, n, t, field, design_type):
     dp = self.engine.DesignParameters(matlab.double([d]), matlab.double([n]), matlab.double([t]), field.value, design_type.value)
     design, errors, _ = self.engine.produce_design(dp, matlab.double(),nargout=3)
+
+    # Sometimes the MATLAB code produces a singleton array for the errors, which is interpreted
+    # by the Python-MATLAB library as a double rather than as a 1x1 matrix.
+    if isinstance(errors, float):
+      errors = [[errors]]
+
+    # Same as above - if the design is of one vector in 1D, we need to manually make it back into a matrix.
+    if isinstance(design, float) or isinstance(design, complex):
+      design = [[design]]
+
     return tfpy.base.SphericalDesign(d, n, t, field, design_type, numpy.array(design), errors[0][-1])
 
   def compute_triple_products(self, sd):
