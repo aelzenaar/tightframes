@@ -104,3 +104,29 @@ class SphericalDesign(object):
     dct['design_type'] = dct['design_type'].value
 
     return dct
+
+  # Helper constants for to_magma_code.
+  _FIELD_MAP = {DesignField.REAL:'RealField', DesignField.COMPLEX:'ComplexField'}
+  _MAGMA_FORMAT = """load "ComputeSymmetry.magma";
+Attach("FrameSymmetry.m");
+SetVerbose("FrameSymmetry",2);
+
+CC<i> := {field_name}(32);
+
+V:=Matrix(CC,{d},{n},[
+{matrix_rows}
+]);
+
+G := FrameSymmetry(CanonicalGramian(V));
+
+"""
+
+  def to_magma_code(self, accuracy = 32, format_string = _MAGMA_FORMAT):
+    matrix_rows = ''
+    for i in range(0,self.d):
+        for j in range(0,self.n):
+            matrix_rows = matrix_rows + f'    {self.matrix[i][j]:.{accuracy}}'
+            if not ((i == self.d - 1) and (j == self.n - 1)):
+                matrix_rows = matrix_rows + ',\n'
+
+    return format_string.format(d = self.d, n = self.n, t = self.t, field_name = self._FIELD_MAP[self.field], matrix_rows = matrix_rows)
