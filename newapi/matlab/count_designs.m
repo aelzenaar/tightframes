@@ -9,6 +9,7 @@
 % Output: tripleProductRatios - a list of ratios, adding to 1, that give
 %                               the relative equivalence class sizes.
 function tripleProductRatios = count_designs(dp, k, accuracy)
+    [d,n,t] = dp.getParameters();
     tripleProducts = NaN(n^3,k);
 
     for it = 1:k
@@ -19,8 +20,10 @@ function tripleProductRatios = count_designs(dp, k, accuracy)
         fprintf(1,"done.\n");
     end
 
-    [tripleProductsUnique,~,ic] = uniquetol(abs(tripleProducts).', accuracy, 'ByRows', true);
+    disp(tripleProducts);
+    [tripleProductsUnique,~,ic] = uniquetol(abs(tripleProducts).', 10^-(accuracy), 'ByRows', true);
     tripleProductsUnique = tripleProductsUnique.';
+    disp(tripleProductsUnique.');
     tripleProductRatios = accumarray(ic,1)./k;
 
     fprintf(1,"\nFound total of %d/%d unique triple-products to %d figures.\n",size(tripleProductsUnique,2),k,accuracy);
