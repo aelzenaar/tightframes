@@ -50,9 +50,9 @@ class SphericalDesign(object):
   """
 
   def __init__(self, d, n, t, field, design_type, matrix = None, error = None):
-    self.d = d
-    self.n = n
-    self.t = t
+    self.d = int(d)
+    self.n = int(n)
+    self.t = int(t)
     self.field = field
     self.design_type = design_type
     self.error = error

@@ -55,9 +55,9 @@ def design_table_generator(d_min, t_min, field_range, design_type_range, list_fr
         d = h - v
         t = w - d
 
-        d = d + d_min
-        t = t + t_min
-        n_min = lower_bound_n(d, t)
+        d = int(d + d_min)
+        t = int(t + t_min)
+        n_min = int(lower_bound_n(d, t))
 
         for field in field_range:
           for design_type in design_type_range:
