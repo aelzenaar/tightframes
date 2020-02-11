@@ -1,6 +1,7 @@
 from enum import Enum
 import json
 import numpy
+import tfpy.matrix_translations
 
 class DesignField(Enum):
   """The field of definition of a spherical design."""
@@ -85,11 +86,14 @@ class SphericalDesign(object):
   def from_dict(cls, dct):
     "Construct a SphericalDesign from a return value of to_dict()."
     if 'matrix' in dct:
-      matrix = numpy.array([[complex(cell) for cell in row] for row in dct['matrix']])
+      if dct['field'] == 'complex':
+        matrix = numpy.array([[complex(cell[0],cell[1]) for cell in row] for row in dct['matrix']])
+      elif dct['field'] == 'real':
+        matrix = numpy.array(dct['matrix'])
     else:
       matrix = None
 
-    new_design = cls(dct['d'], dct['n'], dct['t'], DesignType(dct['field']), DesignType(dct['design_type']), matrix)
+    new_design = cls(dct['d'], dct['n'], dct['t'], DesignField(dct['field']), DesignType(dct['design_type']), matrix)
 
     if 'error' in dct:
       new_design.error = dct['error']
@@ -97,6 +101,7 @@ class SphericalDesign(object):
       new_design._triple_products = dct['triple_products']
     if 'gramian' in dct:
       new_design._gramian = dct['gramian']
+    return new_design
 
   def to_dict(self):
     "Return a serialisable dictionary that can be used to recreate this design using from_dict()."
@@ -110,7 +115,10 @@ class SphericalDesign(object):
 
     dct['field'] = dct['field'].value
     dct['design_type'] = dct['design_type'].value
-    dct['matrix'] = [[(cell.real, cell.imag) for cell in row] for row in dct['matrix'].tolist()]
+    if self.field == DesignField.COMPLEX:
+      dct['matrix'] = [[(cell.real, cell.imag) for cell in row] for row in dct['matrix'].tolist()]
+    elif self.field == DesignField.REAL:
+      dct['matrix'] = dct['matrix'].tolist()
 
     return dct
 
@@ -120,7 +128,7 @@ class SphericalDesign(object):
 Attach("FrameSymmetry.m");
 SetVerbose("FrameSymmetry",2);
 
-CC<i> := {field_name}(32);
+CC<i> := {field_name}({accuracy});
 
 V:=Matrix(CC,{d},{n},[
 {matrix_rows}
@@ -139,14 +147,15 @@ G := FrameSymmetry(CanonicalGramian(V));
                         format fields are:
                           * field_name -- either ComplexField or RealField
                           * matrix_rows -- a set of comma separated values, going row-by-row down the matrix
+                          * accuracy -- the argument to this method
                           * d, n, t -- design parameters
     """
+    return format_string.format(d = self.d, n = self.n, t = self.t, accuracy = accuracy, field_name = self._FIELD_MAP[self.field], matrix_rows = matrix_translations(self.matrix, accuracy))
 
-    matrix_rows = ''
-    for i in range(0,self.d):
-        for j in range(0,self.n):
-            matrix_rows = matrix_rows + f'    {self.matrix[i][j]:.{accuracy}}'
-            if not ((i == self.d - 1) and (j == self.n - 1)):
-                matrix_rows = matrix_rows + ',\n'
+  def to_matlab_code(self, accuracy = 32):
+    """Return formatted MATLAB code to reproduce the stored design.
 
-    return format_string.format(d = self.d, n = self.n, t = self.t, field_name = self._FIELD_MAP[self.field], matrix_rows = matrix_rows)
+      Parameters
+        accuracy -- number of decimal places to output to.
+    """
+    return matrix_translations(self.matrix, accuracy)
