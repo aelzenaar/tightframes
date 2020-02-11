@@ -29,7 +29,7 @@ function tripleProductRatios = count_designs(dp, k, accuracy)
     fprintf(1,"\nFound total of %d/%d unique triple-products to %d figures.\n",size(tripleProductsUnique,2),k,accuracy);
     fprintf(1,"These were distributed as follows: ");
     for it = 1:size(tripleProductRatios)
-        fprintf(1, "%.02f%%", tripleProductRatios(it)*100);
+        fprintf(1, "%.02f%% ", tripleProductRatios(it)*100);
     end
     fprintf(1,"\n");
 end
