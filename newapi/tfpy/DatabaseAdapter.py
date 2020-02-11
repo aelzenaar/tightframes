@@ -45,7 +45,7 @@ class DatabaseAdapter(object):
     return self._designs.find(prototype_designs)
 
   def insert(self, design):
-    return self._designs.insert_one(design.to_dict()).inserted_id()
+    return self._designs.insert_one(design.to_dict()).inserted_id
 
   def update(self, dbid, design):
     return self._designs.replace_one({"_id": dbid},design.to_dict())

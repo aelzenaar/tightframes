@@ -7,10 +7,14 @@ class DesignField(Enum):
   REAL = 'real'
   COMPLEX = 'complex'
 
+ALL_FIELDS = [DesignField.REAL, DesignField.COMPLEX]
+
 class DesignType(Enum):
   """The type of a spherical design."""
   WEIGHTED = 'weighted'
   EQUAL_NORM = "equal_norm"
+
+ALL_DESIGN_TYPES = [DesignType.WEIGHTED, DesignType.EQUAL_NORM]
 
 class TFError(Exception):
   """Base exception class for tfpy."""
@@ -60,12 +64,14 @@ class SphericalDesign(object):
 
   @property
   def gramian(self):
+    "Compute the Gram matrix of the design."
     if self._gramian is None:
       self._gramian = numpy.matmul(self.matrix.conj().T, self.matrix)
     return self._gramian
 
   @property
   def triple_products(self):
+    "Compute the sorted list of 3-products of the design."
     if self._triple_products is None:
       self._triple_products = []
       for u,v,w in triples(self.matrix):
@@ -77,8 +83,9 @@ class SphericalDesign(object):
 
   @classmethod
   def from_dict(cls, dct):
+    "Construct a SphericalDesign from a return value of to_dict()."
     if 'matrix' in dct:
-      matrix = dct['matrix']
+      matrix = numpy.array([[complex(cell) for cell in row] for row in dct['matrix']])
     else:
       matrix = None
 
@@ -92,7 +99,8 @@ class SphericalDesign(object):
       new_design._gramian = dct['gramian']
 
   def to_dict(self):
-    dct = dict(self)
+    "Return a serialisable dictionary that can be used to recreate this design using from_dict()."
+    dct = vars(self)
 
     if '_gramian' in dct:
       dct['gramian'] = dct.pop('_gramian')
@@ -102,6 +110,7 @@ class SphericalDesign(object):
 
     dct['field'] = dct['field'].value
     dct['design_type'] = dct['design_type'].value
+    dct['matrix'] = [[(cell.real, cell.imag) for cell in row] for row in dct['matrix'].tolist()]
 
     return dct
 
@@ -122,6 +131,17 @@ G := FrameSymmetry(CanonicalGramian(V));
 """
 
   def to_magma_code(self, accuracy = 32, format_string = _MAGMA_FORMAT):
+    """Return formatted Magma code that can be used directly with the ComputeSymmetry.magma script.
+
+      Parameters
+        accuracy -- number of decimal places to output to.
+        format_string -- a Python format string that is used for the generation. The available
+                        format fields are:
+                          * field_name -- either ComplexField or RealField
+                          * matrix_rows -- a set of comma separated values, going row-by-row down the matrix
+                          * d, n, t -- design parameters
+    """
+
     matrix_rows = ''
     for i in range(0,self.d):
         for j in range(0,self.n):

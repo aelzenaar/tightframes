@@ -49,5 +49,5 @@ with tfpy.MatlabAdapter(existing = True) as ma:
   print(f'[orthonormal basis in C^5] Triple product sanity check (should be zero): {design.triple_products - ma.compute_triple_products(design)}')
 
   print('\nNow test design_generator...')
-  for design in tfpy.design_generator(range(1,6), range(1,6), range(1,3), [tfpy.DesignField.REAL, tfpy.DesignField.COMPLEX], [tfpy.DesignType.WEIGHTED, tfpy.DesignType.EQUAL_NORM], matlab_adapter = ma):
+  for design in tfpy.design_generator(range(1,6), range(1,6), range(1,3), tfpy.ALL_FIELDS, tfpy.ALL_DESIGN_TYPES, matlab_adapter = ma):
     print(f'[d = {design.d},\tn = {design.n},\tt = {design.t},\tfield = {design.field.value:7}, type = {design.design_type.value:10}] Error: {design.error}')
