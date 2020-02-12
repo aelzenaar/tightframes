@@ -2,6 +2,7 @@ import tfpy.base
 import tfpy.MatlabAdapter
 from scipy.special import comb as nchoosek
 import numpy
+import random
 
 def design_generator(d_range, n_range, t_range, field_range, design_type_range, matlab_adapter = None):
   """Generate best approximations to spherical designs for given sets of parameters.
@@ -57,6 +58,30 @@ def design_table_generator(d_min, t_min, field_range, design_type_range, list_fr
 
         d = int(d + d_min)
         t = int(t + t_min)
+        n_min = int(lower_bound_n(d, t))
+
+        for field in field_range:
+          for design_type in design_type_range:
+            break_loop_on_reentry = False
+            for n in to_infinity_and_beyond(n_min):
+              if break_loop_on_reentry:
+                break
+              design = ma.produce_design(d,n,t,field,design_type)
+              if design.error < threshold:
+                break_loop_on_reentry = True
+                yield design
+
+  if matlab_adapter is None:
+    with tfpy.MatlabAdapter(existing = True) as ma:
+      return dummy(ma)
+  else:
+      return dummy(matlab_adapter)
+
+def design_random_generator(d_max, t_max, field_range, design_type_range, threshold = 1e-10, matlab_adapter = None):
+  def dummy(ma):
+    for h in to_infinity_and_beyond(0):
+        d = random.randrange(1,d_max+1)
+        t = random.randrange(1,t_max+1)
         n_min = int(lower_bound_n(d, t))
 
         for field in field_range:

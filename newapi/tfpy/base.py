@@ -1,7 +1,7 @@
 from enum import Enum
 import json
 import numpy
-import tfpy.matrix_translations
+import tfpy.matrix_translations as matrix_translations
 from copy import deepcopy
 
 class DesignField(Enum):
@@ -60,8 +60,8 @@ class SphericalDesign(object):
     self._gramian = None
     self._triple_products = None
 
-    if matrix is not None and matrix.shape != (d,n):
-      raise DimensionError((d,n), matrix.shape)
+    if matrix is not None and matrix.shape != (self.d,self.n):
+      raise DimensionError((self.d,self.n), matrix.shape)
     self.matrix = matrix
 
   @property
@@ -79,7 +79,6 @@ class SphericalDesign(object):
       for u,v,w in triples(self.matrix):
         self._triple_products.append(numpy.dot(u,v)*numpy.dot(v,w)*numpy.dot(w,u))
       self._triple_products = numpy.sort(numpy.array(self._triple_products)[::-1])
-      print(self._triple_products)
 
     return self._triple_products
 
@@ -90,7 +89,13 @@ class SphericalDesign(object):
       if dct['field'] == 'complex':
         matrix = numpy.array([[complex(cell[0],cell[1]) for cell in row] for row in dct['matrix']])
       elif dct['field'] == 'real':
-        matrix = numpy.array(dct['matrix'])
+        # Some code somewhere is sometimes putting real values into the form [real, imag] where imag = 0. Catch this here.
+        if isinstance(dct['matrix'][0][0], list):
+          matrix = numpy.array([[float(cell[0]) for cell in row] for row in dct['matrix']])
+        else:
+          matrix = numpy.array(dct['matrix'])
+      else:
+        assert False # should not get here
     else:
       matrix = None
 
@@ -154,7 +159,7 @@ G := FrameSymmetry(CanonicalGramian(V));
                           * accuracy -- the argument to this method
                           * d, n, t -- design parameters
     """
-    return format_string.format(d = self.d, n = self.n, t = self.t, accuracy = accuracy, field_name = self._FIELD_MAP[self.field], matrix_rows = matrix_translations(self.matrix, accuracy))
+    return format_string.format(d = self.d, n = self.n, t = self.t, accuracy = accuracy, field_name = self._FIELD_MAP[self.field], matrix_rows = matrix_translations.array_to_magma(self.matrix, accuracy))
 
   def to_matlab_code(self, accuracy = 32):
     """Return formatted MATLAB code to reproduce the stored design.
@@ -162,4 +167,4 @@ G := FrameSymmetry(CanonicalGramian(V));
       Parameters
         accuracy -- number of decimal places to output to.
     """
-    return matrix_translations(self.matrix, accuracy)
+    return matrix_translations.array_to_matlab(self.matrix, accuracy)

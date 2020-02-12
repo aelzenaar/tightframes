@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from copy import deepcopy
+import tfpy.base
 
 class DatabaseAdapter(object):
   """Encapsulate the database API.
@@ -27,15 +28,15 @@ class DatabaseAdapter(object):
     pass
 
   def search(self, **kwargs):
-    prototype_designs = set({})
+    prototype_designs = [{}]
 
     def set_theoretic_product(st, key, values):
-      scratch = set()
+      scratch = []
       for v in values:
         for s in st:
-          t = copy.deepcopy(s)
+          t = deepcopy(s)
           t[key] = v
-          scratch.add(t)
+          scratch.append(t)
       return scratch
 
     for key in ['d','n','t']:
@@ -45,7 +46,13 @@ class DatabaseAdapter(object):
       if key in kwargs:
         prototype_designs = set_theoretic_product(prototype_designs, key, [v.value for v in kwargs[key]])
 
-    return self._designs.find(prototype_designs)
+    designs = []
+    for prototype_design in prototype_designs:
+      for design_dict in self._designs.find(prototype_design):
+        design = tfpy.base.SphericalDesign.from_dict(design_dict)
+        design.dbid = design_dict['_id']
+        designs.append(design)
+    return designs
 
   def insert(self, design):
     return self._designs.insert_one(design.to_dict()).inserted_id
