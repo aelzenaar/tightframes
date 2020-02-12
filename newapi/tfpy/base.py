@@ -2,6 +2,7 @@ from enum import Enum
 import json
 import numpy
 import tfpy.matrix_translations
+from copy import deepcopy
 
 class DesignField(Enum):
   """The field of definition of a spherical design."""
@@ -105,7 +106,7 @@ class SphericalDesign(object):
 
   def to_dict(self):
     "Return a serialisable dictionary that can be used to recreate this design using from_dict()."
-    dct = vars(self)
+    dct = deepcopy(vars(self))
 
     if '_gramian' in dct:
       dct['gramian'] = dct.pop('_gramian')
@@ -119,6 +120,9 @@ class SphericalDesign(object):
       dct['matrix'] = [[(cell.real, cell.imag) for cell in row] for row in dct['matrix'].tolist()]
     elif self.field == DesignField.REAL:
       dct['matrix'] = dct['matrix'].tolist()
+    else:
+      assert False # Should never get here.
+
 
     return dct
 

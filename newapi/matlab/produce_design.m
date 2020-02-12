@@ -9,16 +9,16 @@
 %                      each iteration
 %             kprime - k', the actual number of iterations performed
 function [result,errors, kprime] = produce_design(dp, A)
-    options.maxiter = 1000;
+    options.maxiter = 100;
     options.verbosity = 0;
     warning('off', 'manopt:getHessian:approx')
 
     problem.M = dp.getManoptManifold();
     problem.cost = @(x) dp.computeError(x);
     problem.egrad = @(x) dp.computeGradient(x);
-    
+
     [A, ~, info, ~] = trustregions(problem,A,options);
-    
+
     result = A;
     errors = [info.cost];
     kprime = length(errors);

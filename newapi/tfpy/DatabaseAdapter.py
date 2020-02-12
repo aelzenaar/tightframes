@@ -8,16 +8,19 @@ class DatabaseAdapter(object):
     storage and retrieval of spherical designs.
 
   """
-  def __init__(self):
+  def __init__(self, dbname = 'tfpy', collection = 'designs'):
     self._client = None
     self._db = None
     self._designs = None
+
+    self._dbname = dbname
+    self._collection = collection
     pass
 
   def __enter__(self):
     self._client = MongoClient()
-    self._db = self._client.tfpy
-    self._designs = self._db.designs
+    self._db = self._client[self._dbname]
+    self._designs = self._db[self._collection]
     return self
 
   def __exit__(self, exc_type, exc_value, traceback):
