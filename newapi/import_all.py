@@ -1,3 +1,4 @@
+from matlab.engine import MatlabExecutionError
 from pathlib import Path
 import argparse
 import sys
@@ -42,20 +43,23 @@ if existing == 1:
     print('In the running MATLAB session enter the command:\tmatlab.engine.shareEngine')
     input("Press Enter to continue...")
 
+count = 0
 with tfpy.DatabaseAdapter(collection = 'designs_old') as db:
   with tfpy.MatlabAdapter(existing = (existing == 1)) as ma:
     for f in mat_files:
         matfile = ma.engine.matfile(str(f.resolve()))
-        if ma.engine.getfield(matfile,'result') == None:
-            print(f'Saw {str(f)}\t\tNo result array.',flush=True)
-            continue
-        print(f'Saw {str(f)}\t\tand copying: ',end='',flush=True)
 
-        matrix = numpy.array(ma.engine.getfield(matfile,'result'))
-        d = int(ma.engine.getfield(matfile, 'd'))
-        n = int(ma.engine.getfield(matfile, 'n'))
-        t = int(ma.engine.getfield(matfile, 't'))
-        error = (ma.engine.getfield(matfile, 'errors'))[-1][0]
+        try:
+          matrix = numpy.array(ma.engine.getfield(matfile,'result'))
+          d = int(ma.engine.getfield(matfile, 'd'))
+          n = int(ma.engine.getfield(matfile, 'n'))
+          t = int(ma.engine.getfield(matfile, 't'))
+          error = (ma.engine.getfield(matfile, 'errors'))[-1][0]
+          print(f'Saw {str(f)}\t\tand copying: ',end='',flush=True)
+        except MatlabExecutionError as e:
+          print(f'Saw {str(f)}\t\tNo result array.',flush=True)
+          break
+
 
         # Guess field.
         field = tfpy.DesignField.REAL
@@ -70,3 +74,6 @@ with tfpy.DatabaseAdapter(collection = 'designs_old') as db:
 
         print(f'd = {d}, n = {n}, t={t}, field={field.value}, type={design_type.value}',flush=True)
         db.insert(tfpy.SphericalDesign(d, n, t, field, design_type, matrix, error))
+  count = count + 1
+
+print(f'Imported {count} files in total.')
