@@ -139,9 +139,9 @@ SetVerbose("FrameSymmetry",2);
 
 CC<i> := {field_name}({accuracy});
 
-V:=Matrix(CC,{d},{n},[
+V:=Matrix(CC,{d},{n},
 {matrix_rows}
-]);
+);
 
 G := FrameSymmetry(CanonicalGramian(V));
 
