@@ -67,8 +67,7 @@ Remarks.
 ### Python scripts
 The Python scripts accept a `--help` argument. Here is a list of the scripts.
 
-  * `generate_runtf.py`, which takes a directory of output files from the MATLAB scripts and produces a standalone directory containing an HTML index file to all of them.
-  * `generate_from_search.py`, which takes a *single* output directory from `search_designs.m` and produces a nice HTML rendering (for certain values of 'nice').
+  * `generate_repo.py`, which takes a directory of output files from the MATLAB scripts and produces a standalone directory containing an HTML index file to all of them.
   * `fmagma.py`, which takes a single `.mat` file and produces a `.magma` file containing the same design.
   * `project.py`, which takes a single `.mat` file and produces a simple LaTeX/TiKZ visualisation. There are a number of configuration options; the image below
     was produced from a design with parameters (_d_,_n_,_t_) = (2,12,4) by running the following command in `examples`:

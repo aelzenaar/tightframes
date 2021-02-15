@@ -4,8 +4,8 @@ def array_to_matlab(array, accuracy = 32):
   string = "["
   for row in array:
     for cell in row:
-      string = string + str(cell) + ','
-    string = string[:-1] # Remove trailing comma at end of row
+      string = string + str(cell) + ', '
+    string = string[:-2] # Remove trailing comma at end of row
     string = string + ';\n '
   string = string + ']'
   return string
