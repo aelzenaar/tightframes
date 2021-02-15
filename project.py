@@ -6,11 +6,6 @@ import shutil
 from random import random
 import colorsys
 
-try:
-    from glasbey import Glasbey
-    smartcol = True
-except:
-    smartcol = False
 
 import contextlib
 
@@ -27,7 +22,7 @@ def smart_open(filename=None):
         if fh is not sys.stdout:
             fh.close()
 
-parser = argparse.ArgumentParser(description='Format a given spherical design in TiKZ format.', epilog='Smart colours are {0}available.'.format('' if smartcol else 'not '))
+parser = argparse.ArgumentParser(description='Format a given spherical design in TiKZ format.', epilog='Smart colours are no longer available.')
 parser.add_argument('filename', metavar='MATFILE', help='.mat file to read from')
 parser.add_argument('-o','--output', default=None, help='output file (default is stdout)')
 parser.add_argument('-e','--existing', action='count', default=0, help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
@@ -51,7 +46,6 @@ multi_axis = args.multi_axis
 domestic_lines = args.domestic_lines
 international_lines = args.international_lines
 rays = args.rays
-smartcol = (not args.fast_colours) and smartcol
 
 # -e but not -ee specified, so print usage and wait for user OK.
 if existing == 1:
@@ -78,14 +72,9 @@ reals = eng.real(result)
 imags = eng.imag(result)
 
 # Pick n colours.
-if smartcol:
-    gb = Glasbey(lightness_range=(40,60))
-    p = gb.generate_palette(size=n)
-    colours = gb.convert_palette_to_rgb(p)
-else:
-    colours = []
-    for i in range(0,n):
-        colours.append(colorsys.hls_to_rgb(i/n, 0.5 + random()/100, 0.9 + random()/100) )
+colours = []
+for i in range(0,n):
+    colours.append(colorsys.hls_to_rgb(i/n, 0.5 + random()/100, 0.9 + random()/100) )
 
 #
 # Below this point are the functions called in the below loop to actually generate LaTeX code.
