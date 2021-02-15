@@ -68,10 +68,6 @@ for f in mat_files:
     fill(d,'d',int)
     fill(n,'n',int)
     fill(t,'t',int)
-    fill(k,'k',int)
-    fill(errorMultiplier,'errorMultiplier',lambda val: '%E'%(val) )
-    fill(errorExp,'errorExp',float)
-    fill(totalBadness,'totalBadness',int)
     fill(error,'errors',lambda val: val[-1][0])
     fill(error_short,'errors',lambda val: '%E'%(val[-1][0]) )
     fill(comment,'comment',str)
@@ -107,12 +103,8 @@ with (output_dir/'index.html').open(mode='w') as f:
                 <th><i>d</i></th>
                 <th><i>n</i></th>
                 <th><i>t</i></th>
-                <th>iterations (<i>k</i>)</th>
-                <th>errorMultiplier</th>
-                <th>errorExp</th>
                 <th>error (short)</th>
                 <th>error (long)</th>
-                <th>badness proportion</th>
                 <th>comment</th>
                 <th>link to .mat file</th>
             </tr>\n''')
@@ -125,12 +117,8 @@ with (output_dir/'index.html').open(mode='w') as f:
                 <td>{d[i]}</td>
                 <td>{n[i]}</td>
                 <td>{t[i]}</td>
-                <td>{k[i]}</td>
-                <td>{errorMultiplier[i]}</td>
-                <td>{errorExp[i]}</td>
                 <td>{error_short[i]}</td>
                 <td>{error[i]}</td>
-                <td>{bad_tag}</td>
                 <td>{comment[i]}</td>
                 <td><a href="{filenames[i]}">{filenames[i]}</a></td>
             </tr>'''
