@@ -1,22 +1,29 @@
+t = 5;
 d = 3;
-n = 27;
-t = 3;
+n = 25;
 k = 100; % Iterations
-accuracy = 4;
+accuracy = 25;
+threshold = 1e-9;
 
-errorComputer = ComplexDesignPotential(d,n,t);
+errorComputer = RealDesignPotential(d,n,t);
 
 tripleProducts = NaN(n^3,k);
 
-for it = 1:k
+it = 1;
+while it <= k
     fprintf(1,"[%04d/%d] generating design... ",it,k);
-    [result, ~, ~] = iterateOnDesignMO(NaN(d,n), 1e4, errorComputer);
-    fprintf(1,"computing triple products... ");
-    tripleProducts(:,it) = round(compute3Products(result).',accuracy);
-    fprintf(1,"done.\n");
+    [result, cost, ~] = iterateOnDesignMO(NaN(d,n), 1e4, errorComputer);
+    if(cost(end) < threshold)
+        fprintf(1,"computing triple products... ");
+        tripleProducts(:,it) = round(compute3Products(result).',accuracy);
+        fprintf(1,"done.\n");
+        it = it + 1;
+    else
+        fprintf(1,"not found to tolerance\n");
+    end
 end
 
-[tripleProductsUnique,~,ic] = uniquetol(abs(tripleProducts).', accuracy, 'ByRows', true);
+[tripleProductsUnique,~,ic] = uniquetol(abs(tripleProducts).', 1/10, 'ByRows', true);
 tripleProductsUnique = tripleProductsUnique.';
 tripleProducts_ratios = accumarray(ic,1)./k;
 
