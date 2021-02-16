@@ -3,6 +3,8 @@
 
 t_min = 2;
 d_min = 3;
+type = 'weighted';
+field = 'real';
 
 list_from = 1;
 
@@ -33,13 +35,19 @@ for h = list_from:k
     d = d + d_min;
     t = t + t_min;
     
-    n_min = guessOrderLowerBound(d,t);
-    %n_min = 2;
+    %n_min = guessOrderLowerBound(d,t);
+    n_min = 2;
     
-    fprintf(1, '[d = %d, t = %d] Searching in n = %d:%d\n', d, t, n_min, n_max);
+    fprintf(1, '[t = %d, d = %d] Searching in n = %d:%d\n', t, d, n_min, n_max);
     for n = n_min:n_max
-        fprintf(1, '[d = %d, t = %d, n = %d] Iterating... ',d, t, n);
-        errorComputer = RealDesignPotential(d,n,t);
+        fprintf(1, '[t = %d, d = %d, n = %d] Iterating... ',t, d, n);
+        if(strcmp(field,'real'))
+            errorComputer = RealDesignPotential(d,n,t,type);
+        elseif strcmp(field, 'complex')
+            errorComputer = ComplexDesignPotential(d,n,t,type);
+        else
+            error('unknown field');
+        end
         [result, errors, ~] = iterateOnDesignMO(NaN(d,n), max_iter_each_time, errorComputer);
         fprintf(1, 'done with final error %E',errors(end));
         if(errors(end) < threshold)

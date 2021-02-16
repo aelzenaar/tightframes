@@ -1,24 +1,32 @@
 % The purpose of this script is to find putatively optimal spherical
 % designs of _unknown_ n (with fixed d, t).
 
-t = 4;
+t = 3;
 d = 3;
 n_min = 2;
 n_max = 50;
+type = 'weighted';
+field = 'complex';
 
 k_try = 1e3;
 
-comment = 'search_designsMO';
+comment = append('search_designsMO ', field, ' ', type);
 
 fprintf(1, "Searching (d,t) = (%d,%d) in n = %d:%d\n", d, t, n_min, n_max);
 
-dirname = sprintf('search_designsMO_%d_%d_%s',d,t,datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS'));
+dirname = sprintf('search_designsMO_%s_%s_%d_%d_%s',field,type,d,t,datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS'));
 mkdir(dirname);
 fprintf(1, 'Output directory: %s\n\n', dirname);
 
 for n = n_min:n_max
     fprintf(1, '[n = %d] Iterating... ',n);
-    errorComputer = RealDesignPotential(d,n,t);
+    if(strcmp(field,'real'))
+        errorComputer = RealDesignPotential(d,n,t,type);
+    elseif strcmp(field, 'complex')
+        errorComputer = ComplexDesignPotential(d,n,t,type);
+    else
+        error('unknown field');
+    end
     [result, errors, k] = iterateOnDesignMO(NaN(d,n), k_try, errorComputer);
     fprintf(1, 'done with final error %E\n',errors(end));
         

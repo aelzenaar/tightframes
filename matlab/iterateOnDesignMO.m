@@ -22,7 +22,8 @@ function [result,errors, kprime] = iterateOnDesignMO(A, k, errorComputer)
     options.verbosity = 0;
     warning('off', 'manopt:getHessian:approx')
 
-    problem.M = euclideanfactory(d,n);
+    solver = errorComputer.getSolver();
+    problem.M = solver(d,n);
     problem.cost = @(x) errorComputer.computeError(x);
     problem.egrad = @(x) errorComputer.computeGradient(x);
     problem.delta_bar = problem.M.typicaldist()/10;

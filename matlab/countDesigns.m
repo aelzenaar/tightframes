@@ -1,11 +1,11 @@
-t = 5;
+t = 2;
 d = 3;
-n = 25;
+n = 6;
 k = 100; % Iterations
 accuracy = 25;
 threshold = 1e-9;
 
-errorComputer = RealDesignPotential(d,n,t);
+errorComputer = RealDesignPotential(d,n,t,'weighted');
 
 tripleProducts = NaN(n^3,k);
 
@@ -23,14 +23,14 @@ while it <= k
     end
 end
 
-[tripleProductsUnique,~,ic] = uniquetol(abs(tripleProducts).', 1/10, 'ByRows', true);
+[tripleProductsUnique,~,ic] = uniquetol(abs(tripleProducts).', 1/9, 'ByRows', true);
 tripleProductsUnique = tripleProductsUnique.';
 tripleProducts_ratios = accumarray(ic,1)./k;
 
 fprintf(1,"\nFound total of %d/%d unique triple-products to %d figures.\n",size(tripleProductsUnique,2),k,accuracy);
 fprintf(1,"These were distributed as follows: ");
 for it = 1:size(tripleProducts_ratios)
-    fprintf(1, "%.02f%%", tripleProducts_ratios(it)*100);
+    fprintf(1, "%.02f%% ", tripleProducts_ratios(it)*100);
 end
 fprintf(1,"\n");
 
