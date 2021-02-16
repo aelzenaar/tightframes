@@ -22,10 +22,11 @@ function [result,errors, kprime] = iterateOnDesignMO(A, k, errorComputer)
     options.verbosity = 0;
     warning('off', 'manopt:getHessian:approx')
 
-    problem.M = obliquecomplexfactory(d,n);
+    problem.M = euclideanfactory(d,n);
     problem.cost = @(x) errorComputer.computeError(x);
     problem.egrad = @(x) errorComputer.computeGradient(x);
-    
+    problem.delta_bar = problem.M.typicaldist()/10;
+
     [A, ~, info, ~] = trustregions(problem,A,options);
     
     result = A;

@@ -1,10 +1,10 @@
 % The purpose of this script is to find putatively optimal spherical
 % designs of _unknown_ n (with fixed d, t).
 
-t = 3;
-d = 5;
-n_min = guessOrderLowerBound(d,t);
-n_max = n_min*2;
+t = 4;
+d = 3;
+n_min = 2;
+n_max = 50;
 
 k_try = 1e3;
 
@@ -18,11 +18,11 @@ fprintf(1, 'Output directory: %s\n\n', dirname);
 
 for n = n_min:n_max
     fprintf(1, '[n = %d] Iterating... ',n);
-    errorComputer = ComplexDesignPotential(d,n,t);
+    errorComputer = RealDesignPotential(d,n,t);
     [result, errors, k] = iterateOnDesignMO(NaN(d,n), k_try, errorComputer);
     fprintf(1, 'done with final error %E\n',errors(end));
         
-    save(sprintf('%s/run_%03d.mat',dirname,n), 'result','errors','d','n','t','k','comment');
+    save(sprintf('%s/run_real_%03d.mat',dirname,n), 'result','errors','d','n','t','k','comment');
     
     ghostFigure = figure('Visible',false);
     plot(1:length(errors),errors);
