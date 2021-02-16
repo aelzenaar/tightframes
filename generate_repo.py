@@ -50,7 +50,7 @@ for f in mat_files:
     if eng.getfield(matfile,'result') == None:
         print(f'Saw {str(f)}\t\tNo result array.')
         continue
-#    print(f'Saw {str(f)}\t\tand copying.')
+    print(f'Saw {str(f)}\t\tand parsing.')
 
     def fill(array, name, form):
         try:
@@ -64,9 +64,23 @@ for f in mat_files:
     new_design['t'] = int(eng.getfield(matfile,'t'))
     new_design['d'] = int(eng.getfield(matfile,'d'))
     new_design['n'] = int(eng.getfield(matfile,'n'))
-    print(eng.getfield(matfile,'errors')[0][-1])
-    new_design['error'] = float(eng.getfield(matfile,'errors')[0][-1])
+
+    # Try really hard to get the error out of the Matlab array it may or may not be wrapped in
+    error_pack = eng.getfield(matfile,'errors');
+    try:
+      new_design['error'] = float(error_pack[0][-1])
+    except:
+      try:
+        new_design['error'] = float(error_pack)
+      except:
+        pass
+    if not ('error' in new_design):
+      print('Failed to parse error ', error_pack)
+      continue
+
+
     new_design['comment'] = str(eng.getfield(matfile,'comment'))
+
     relative_filename = output_dir/f.relative_to(search_dir)
     new_design['original_file'] = f
     new_design['filename'] = relative_filename.relative_to(output_dir)
@@ -96,6 +110,12 @@ for f in mat_files:
 
     if is_admissible:
       designs.append(new_design)
+
+designs = sorted(designs, key=lambda k: k['error'])
+designs = sorted(designs, key=lambda k: k['n'])
+designs = sorted(designs, key=lambda k: k['d'])
+designs = sorted(designs, key=lambda k: k['t'])
+
 
 with (output_dir/'index.html').open(mode='w') as f:
     f.write(f'''<!DOCTYPE html>
