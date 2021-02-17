@@ -14,7 +14,7 @@ max_iter_each_time = 1e4; % Number of iterations for each (d,n,t) triplet
 threshold = 1e-9; % Guess we have a design if error < threshold.
 comment = sprintf('tabulate, threshold = %E',threshold);
 
-dirname = sprintf('tabulate_real_%s',datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS'));
+dirname = sprintf('tabulate_%s_%s_%s',field,type,datestr(datetime('now'),'yyyy-mm-dd-HH-MM-SS'));
 mkdir(dirname);
 fd = fopen(sprintf('%s/results.csv',dirname), 'w');
 
