@@ -27,9 +27,9 @@ def print_header(f, title, magma):
         <h2>List of designs</h2>
         <table border="1px" cellspacing="0" cellpadding="3">
             <tr>
+                <th><i>t</i></th>
                 <th><i>d</i></th>
                 <th><i>n</i></th>
-                <th><i>t</i></th>
                 <th>error (short)</th>
                 <th>error (long)</th>
                 <th>comment</th>
