@@ -48,25 +48,27 @@ for h = list_from:k
         else
             error('unknown field');
         end
+        
         [result, errors, ~] = iterateOnDesignMO(NaN(d,n), max_iter_each_time, errorComputer);
+        
         fprintf(1, 'done with final error %E',errors(end));
+        filename = sprintf('run_%03d_%03d_%03d.mat',t,d,n);
+        filename_graph = sprintf('run_%03d_%03d_%03d_errors.png',t,d,n);
+        
+        % Save design & error graph
+        save(sprintf('%s/%s',dirname,filename), 'result','errors','t','d','n','k','comment');
+        ghostFigure = figure('Visible',false);
+        plot(1:length(errors),errors);
+        set(gca, 'YScale', 'log');
+        saveas(gcf, sprintf('%s/%s', dirname, filename_graph));
+        close(gcf);
+        
         if(errors(end) < threshold)
             fprintf(1, ' (met threshold!)\n');
-
-            filename = sprintf('run_%03d_%03d_%03d.mat',t,d,n);
-            filename_graph = sprintf('run_%03d_%03d_%03d_errors.png',t,d,n);
             
             % Log to results database file
             fprintf(fd, '%d,%d,%d,%s,%s,%E\n', t, d, n, filename, filename_graph, errors(end));
-            
-            % Save error graph
-           save(sprintf('%s/%s',dirname,filename), 'result','errors','t','d','n','k','comment');
-           ghostFigure = figure('Visible',false);
-           plot(1:length(errors),errors);
-           set(gca, 'YScale', 'log');
-           saveas(gcf, sprintf('%s/%s', dirname, filename_graph));
-           close(gcf);
-            
+                        
             break;
         end
         fprintf(1,'\n');
