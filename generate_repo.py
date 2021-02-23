@@ -56,10 +56,11 @@ parser = argparse.ArgumentParser(description='Generate a database of designs fro
 parser.add_argument('directory', metavar='DIR', help='directory to scan')
 parser.add_argument('-R','--recursive', action='store_true', help='scan DIR recursively')
 parser.add_argument('-e','--existing', action='count', default=0, help='connect to a running MATLAB session; specify twice to skip MATLAB verification prompt')
-parser.add_argument('-t','--threshold', action='store', default=0, help='threshold to include, error must be < 10^-t')
+parser.add_argument('-t','--threshold', action='store', default=-10, help='threshold to include, error must be < 10^-t')
 parser.add_argument('-o','--output', default='html', help='output directory')
 parser.add_argument('-u','--unique', action='count', default = 0, help='keep only the best value for each t,d,n; specify twice to only keep the best n meeting the threshold')
 parser.add_argument('-m','--magma', action='store_true', help='also generate magma files')
+parser.add_argument('-s','--skipcopy', action='store_true', help='skip actually copying or writing anything but the html file')
 
 args = parser.parse_args()
 search_dir = Path(args.directory)
@@ -73,6 +74,7 @@ existing = args.existing
 threshold = int(args.threshold)
 unique = args.unique
 magma = args.magma
+skipcopy = args.skipcopy
 
 if recurse:
     mat_files = sorted(list(search_dir.glob('**/*.mat')))
@@ -191,14 +193,16 @@ with (output_dir/'index.html').open(mode='w') as f:
     print_header(f,search_dir.resolve(),magma)
     for design in designs:
         # Copy matlab file
-        (output_dir/design['filename']).parent.mkdir(parents=True,exist_ok=True)
-        shutil.copy(design['original_file'],output_dir/design['filename'])
+        if not skipcopy:
+          (output_dir/design['filename']).parent.mkdir(parents=True,exist_ok=True)
+          shutil.copy(design['original_file'],output_dir/design['filename'])
 
         # Produce magma file
         if magma:
-            with open(output_dir/design['magma_file'], 'w') as mf:
-                mf.write(design['magma_text'])
             magma_file = design['magma_file'] # Get around the fact we can't index into a dict in a nested format string
+            if not skipcopy:
+                with open(output_dir/design['magma_file'], 'w') as mf:
+                    mf.write(design['magma_text'])
 
         f.write(f'''            <tr style="background-color: {'#ff8080' if design['error'] < 1e-12 else '#ffdd80' if design['error'] < 1e-9 else '#87c9ff;' if design['error'] < 1e-4 else '#80ffc2' if design['error'] < 1 else '#fff'}">
                 <td>{design['t']}</td>
