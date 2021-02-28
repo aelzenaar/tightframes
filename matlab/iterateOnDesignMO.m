@@ -20,7 +20,8 @@ function [result,errors, kprime] = iterateOnDesignMO(~, k, errorComputer)
     [d,n,~] = errorComputer.getParameters();
     A = [];
     
-    options.maxiter = k;
+%    options.maxiter = k;
+    options.miniter = k;
     options.verbosity = 0;
     warning('off', 'manopt:getHessian:approx')
 
@@ -32,7 +33,7 @@ function [result,errors, kprime] = iterateOnDesignMO(~, k, errorComputer)
 
     [A, ~, info, ~] = trustregions(problem,A,options);
     
-    result = A;
+    result = sqrt(n)*A./norm(A,'fro');
     errors = [info.cost];
     kprime = length(errors);
 end
