@@ -210,9 +210,9 @@ with (output_dir/'index.html').open(mode='w') as f:
                 <td>{design['n']}</td>
                 <td>{'%E'%design['error']}</td>
                 <td>{design['error']}</td>
-                <td>{design['comment']}</td>
-                <td><a href="{design['filename']}">{design['filename']}</a></td>
-                {f'<td><a href="{magma_file}">{magma_file}</a></td>' if magma else ''}
+                <td><small>{design['comment']}</small></td>
+                <td><a href="{design['filename']}">matlab file</a></td>
+                {f'<td><a href="{magma_file}">magma file</a></td>' if magma else ''}
             </tr>'''
         )
     print_footer(f)
