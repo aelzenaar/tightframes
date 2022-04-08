@@ -30,6 +30,7 @@ function [result,errors, kprime] = iterateOnDesignMO(~, k, errorComputer)
     problem.cost = @(x) errorComputer.computeError(x);
     problem.egrad = @(x) errorComputer.computeGradient(x);
     problem.delta_bar = problem.M.typicaldist()/10;
+    %checkgradient(problem);
 
     [A, ~, info, ~] = trustregions(problem,A,options);
     

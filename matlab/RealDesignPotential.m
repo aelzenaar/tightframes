@@ -46,7 +46,7 @@ classdef RealDesignPotential < DesignPotential
                     grad(row,col) = 4*coefficient*t*sum(sum1) - 4*t*sum(abs(diag(gram)).^t).*gram(col,col)^(t-1).*S(row,col);
                 end
             end
-            grad(:,1) = grad(:,1) + 4*(gram(1,1) - 1)^2.*S(:,1);
+            grad(:,1) = grad(:,1) + 4*(gram(1,1) - 1).*S(:,1);
         end
         
         function [d,n,t] = getParameters(this)

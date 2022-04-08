@@ -10,7 +10,7 @@ list_from = 1;
 
 k = Inf; % Number of iterates
 n_max = Inf; % Number of vectors to check up to
-max_iter_each_time = 1e4; % Number of iterations for each (d,n,t) triplet
+max_iter_each_time = 1e5; % Number of iterations for each (d,n,t) triplet
 threshold = 1e-9; % Guess we have a design if error < threshold.
 comment = sprintf('tabulate, threshold = %E',threshold);
 
@@ -35,8 +35,8 @@ for h = list_from:k
     d = d + d_min;
     t = t + t_min;
     
-    %n_min = guessOrderLowerBound(d,t);
-    n_min = 2;
+    n_min = guessOrderLowerBound(d,t);
+    %n_min = 2;
     
     fprintf(1, '[t = %d, d = %d] Searching in n = %d:%d\n', t, d, n_min, n_max);
     for n = n_min:n_max
@@ -56,12 +56,12 @@ for h = list_from:k
         filename_graph = sprintf('run_%03d_%03d_%03d_errors.png',t,d,n);
         
         % Save design & error graph
-        save(sprintf('%s/%s',dirname,filename), 'result','errors','t','d','n','k','comment');
-        ghostFigure = figure('Visible',false);
-        plot(1:length(errors),errors);
-        set(gca, 'YScale', 'log');
-        saveas(gcf, sprintf('%s/%s', dirname, filename_graph));
-        close(gcf);
+        %save(sprintf('%s/%s',dirname,filename), 'result','errors','t','d','n','k','comment');
+        %ghostFigure = figure('Visible',false);
+        %plot(1:length(errors),errors);
+        %set(gca, 'YScale', 'log');
+        %saveas(gcf, sprintf('%s/%s', dirname, filename_graph));
+        %close(gcf);
         
         if(errors(end) < threshold)
             fprintf(1, ' (met threshold!)\n');
