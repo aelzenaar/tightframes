@@ -30,7 +30,7 @@ classdef RealDesignPotential < DesignPotential
             t = this.t_;
             coefficient = this.coefficient_;
             gram = S'*S;
-            epsilon = abs(coefficient*sum(abs(gram).^(2*t),'all') - (sum(abs(diag(gram)).^t))^2);
+            epsilon = abs(coefficient*sum(abs(gram).^(2*t),'all') - (sum(abs(diag(gram)).^t))^2) + (gram(1,1) - 1)^2;
         end
         
         function grad = computeGradient(this,S)
@@ -46,6 +46,7 @@ classdef RealDesignPotential < DesignPotential
                     grad(row,col) = 4*coefficient*t*sum(sum1) - 4*t*sum(abs(diag(gram)).^t).*gram(col,col)^(t-1).*S(row,col);
                 end
             end
+            grad(:,1) = grad(:,1) + 4*(gram(1,1) - 1)^2.*S(:,1);
         end
         
         function [d,n,t] = getParameters(this)

@@ -33,7 +33,8 @@ function [result,errors, kprime] = iterateOnDesignMO(~, k, errorComputer)
 
     [A, ~, info, ~] = trustregions(problem,A,options);
     
-    result = sqrt(n)*A./norm(A,'fro');
+%    result = sqrt(n)*A./norm(A,'fro');
+    result = A;
     errors = [info.cost];
     kprime = length(errors);
 end
