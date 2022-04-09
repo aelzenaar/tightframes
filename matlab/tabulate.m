@@ -56,7 +56,7 @@ for h = list_from:k
         filename_graph = sprintf('run_%03d_%03d_%03d_errors.png',t,d,n);
         
         % Save design & error graph
-        %save(sprintf('%s/%s',dirname,filename), 'result','errors','t','d','n','k','comment');
+        save(sprintf('%s/%s',dirname,filename), 'result','errors','t','d','n','k','comment');
         %ghostFigure = figure('Visible',false);
         %plot(1:length(errors),errors);
         %set(gca, 'YScale', 'log');
